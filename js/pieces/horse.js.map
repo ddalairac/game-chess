@@ -1,0 +1,1 @@
+{"version":3,"file":"horse.js","sourceRoot":"","sources":["../../ts/pieces/horse.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,UAAU,EAAE,KAAK,EAAE,MAAM,aAAa,CAAA;AAE/C,MAAM,OAAO,KAAM,SAAQ,KAAK;IAC5B,YAAY,MAAe;QACvB,KAAK,CAAC,MAAM,EAAE,UAAU,CAAC,KAAK,CAAC,CAAA;IACnC,CAAC;CAEJ"}

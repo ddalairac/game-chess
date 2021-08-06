@@ -1,8 +1,9 @@
-import { Piece } from '../piece'
+import { ePlayer } from '../game.js'
+import { ePieceType, Piece } from '../piece.js'
 
 export class Pawn extends Piece {
-    constructor(){
-        super()
+    constructor(player: ePlayer){
+        super(player, ePieceType.Pawn)
     }
 
 }

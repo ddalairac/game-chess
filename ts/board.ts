@@ -3,5 +3,5 @@ export class Board{
         
     }
 
-    // draw Chess board with canvas
+
 }
