@@ -4,15 +4,11 @@ import { eColor } from './game.js';
 export abstract class Piece {
     private _player: eColor;
     private _type: ePieceType
-    public y: number
-    public x: number
     public isSelected:boolean
 
-    constructor(player: eColor, type: ePieceType, y: number, x: number) {
+    constructor(player: eColor, type: ePieceType) {
         this._player = player;
         this._type = type;
-        this.y = y;
-        this.x = x;
         this.isSelected = false
     }
 

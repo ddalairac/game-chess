@@ -18,11 +18,6 @@ export class Render {
             Render.instance.rezize()
         }
     }
-
-    public ctx: CanvasRenderingContext2D
-    public canvas: HTMLCanvasElement
-    private imgs = {}
-
     private static _instance: Render
     public static get instance() {
         return this._instance;
@@ -33,10 +28,18 @@ export class Render {
     get stageLimitY() {
         return this.ctx.canvas.height
     }
+    public ctx: CanvasRenderingContext2D
+    public canvas: HTMLCanvasElement
+    private imgs = {}
+    public boarSize: number = 0
+    public slotSize: number = 0
+    public topMargin: number = 0
+    public leftMargin: number = 0
 
     private rezize() {
         this.ctx.canvas.width = window.innerWidth;
         this.ctx.canvas.height = window.innerHeight;
+        this.getBoarSizeAndMargin()
         this.draw()
     }
 
@@ -70,38 +73,50 @@ export class Render {
         if (boarSize > 600) {
             boarSize = 600
         }
-        boarSize = boarSize - 30;
+        this.boarSize = boarSize - 30;
 
         let xSpace = (this.stageLimitX - boarSize > 0) ? this.stageLimitX - boarSize : 0;
         let ySpace = (this.stageLimitY - boarSize > 0) ? this.stageLimitY - boarSize : 0;
-        let topMargin = (ySpace > 0) ? ySpace / 2 : 0;
-        let leftMargin = (xSpace > 0) ? xSpace / 2 : 0;
-        let slotSize = boarSize / 8;
-        return { boarSize, slotSize, topMargin, leftMargin }
+
+        this.topMargin = (ySpace > 0) ? ySpace / 2 : 0;
+        this.leftMargin = (xSpace > 0) ? xSpace / 2 : 0;
+        this.slotSize = boarSize / 8;
+
+        // return { boarSize, slotSize, topMargin, leftMargin }
     }
 
-    private drawBoard() {
-        const { boarSize, slotSize, topMargin, leftMargin } = this.getBoarSizeAndMargin()
-        let size = boarSize / 8;
 
+    private drawBoard() {
         if (Game.instance && Game.instance.board && Game.instance.board.slots) {
             Game.instance.board.slots.forEach(slot => {
-                let yPx = (slot.y * slotSize) + topMargin;
-                let xPx = (slot.x * slotSize) + leftMargin;
+                // Draw Board scuare
+                let yPx = (slot.y * this.slotSize) + this.topMargin;
+                let xPx = (slot.x * this.slotSize) + this.leftMargin;
+                this.drawScuare(xPx, yPx, slot.color, this.slotSize)
 
-                this.drawScuare(xPx, yPx, slot.color, slotSize)
-
+                // Draw static pieces
                 if (slot.piece) {
                     if (!slot.piece.isSelected) {
-                        this.ctx.drawImage(this.imgs[slot.piece.img], xPx, yPx, slotSize, slotSize);
-                    } else {
-
+                        this.ctx.drawImage(this.imgs[slot.piece.img], xPx, yPx, this.slotSize, this.slotSize);
                     }
                 }
             });
         }
     }
+    private drawMovingPiece() {
+        if (Game.instance && Game.instance.board && Game.instance.board.selectedPiece) {
+            let Xmouse = Game.instance.mouse.x - (this.slotSize/2);
+            let Ymouse = Game.instance.mouse.y - (this.slotSize/2);
+            let piece = Game.instance.board.selectedPiece;
+            this.ctx.drawImage(this.imgs[piece.img], Xmouse, Ymouse, this.slotSize, this.slotSize);
+        }
+    }
     public draw() {
+        // borrar canvas
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Dibujar canvas
         this.drawBoard()
+        this.drawMovingPiece()
     }
 }

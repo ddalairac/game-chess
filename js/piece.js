@@ -1,9 +1,7 @@
 export class Piece {
-    constructor(player, type, y, x) {
+    constructor(player, type) {
         this._player = player;
         this._type = type;
-        this.y = y;
-        this.x = x;
         this.isSelected = false;
     }
     get player() {

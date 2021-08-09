@@ -5,6 +5,11 @@ export class Game {
         this.nextTime = 0;
         this.delay = Math.round(1000 / 24);
         this.board = null;
+        this.mouse = {
+            x: 0,
+            y: 0
+        };
+        this.gameOver = false;
         if (Game._instance) {
             throw "Ya existe una instancia de Game";
         }
@@ -22,10 +27,13 @@ export class Game {
         }
         Game.instance.nextTime = time + Game.instance.delay;
         Render.instance.draw();
+        if (Game.instance.gameOver == false) {
+            requestAnimationFrame(Game.instance.frameLoop);
+        }
     }
     starGame() {
         Game.instance.board = new Board();
-        Game.instance.turn = eColor.white;
+        Game.instance.playerTurn = eColor.white;
         window.requestAnimationFrame(Game.instance.frameLoop);
     }
 }
