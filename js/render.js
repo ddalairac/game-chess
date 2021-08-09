@@ -60,18 +60,23 @@ export class Render {
         let ySpace = (this.stageLimitY - boarSize > 0) ? this.stageLimitY - boarSize : 0;
         let topMargin = (ySpace > 0) ? ySpace / 2 : 0;
         let leftMargin = (xSpace > 0) ? xSpace / 2 : 0;
-        return { boarSize, topMargin, leftMargin };
+        let slotSize = boarSize / 8;
+        return { boarSize, slotSize, topMargin, leftMargin };
     }
     drawBoard() {
-        const { boarSize, topMargin, leftMargin } = this.getBoarSizeAndMargin();
+        const { boarSize, slotSize, topMargin, leftMargin } = this.getBoarSizeAndMargin();
         let size = boarSize / 8;
         if (Game.instance && Game.instance.board && Game.instance.board.slots) {
             Game.instance.board.slots.forEach(slot => {
-                let yPx = (slot.y * size) + topMargin;
-                let xPx = (slot.x * size) + leftMargin;
-                this.drawScuare(xPx, yPx, slot.color, size);
+                let yPx = (slot.y * slotSize) + topMargin;
+                let xPx = (slot.x * slotSize) + leftMargin;
+                this.drawScuare(xPx, yPx, slot.color, slotSize);
                 if (slot.piece) {
-                    this.ctx.drawImage(this.imgs[slot.piece.img], xPx, yPx, size, size);
+                    if (!slot.piece.isSelected) {
+                        this.ctx.drawImage(this.imgs[slot.piece.img], xPx, yPx, slotSize, slotSize);
+                    }
+                    else {
+                    }
                 }
             });
         }

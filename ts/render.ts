@@ -1,11 +1,11 @@
 import { eColor, Game } from './game.js';
-import { Piece } from './piece.js';
 
 export class Render {
     constructor() {
         if (Render._instance) {
             throw "Ya existe una instancia de Render";
         }
+        // console.log("Render instance")
         Render._instance = this
         this.canvas = document.getElementById("stage") as HTMLCanvasElement;
         this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
@@ -19,8 +19,8 @@ export class Render {
         }
     }
 
-    private ctx: CanvasRenderingContext2D
-    private canvas: HTMLCanvasElement
+    public ctx: CanvasRenderingContext2D
+    public canvas: HTMLCanvasElement
     private imgs = {}
 
     private static _instance: Render
@@ -65,7 +65,7 @@ export class Render {
         this.ctx.fill();
     }
 
-    private getBoarSizeAndMargin() {
+    public getBoarSizeAndMargin() {
         let boarSize = (this.canvas.width - this.canvas.height < 0) ? this.canvas.width : this.canvas.height;
         if (boarSize > 600) {
             boarSize = 600
@@ -76,22 +76,27 @@ export class Render {
         let ySpace = (this.stageLimitY - boarSize > 0) ? this.stageLimitY - boarSize : 0;
         let topMargin = (ySpace > 0) ? ySpace / 2 : 0;
         let leftMargin = (xSpace > 0) ? xSpace / 2 : 0;
-        return { boarSize, topMargin, leftMargin }
+        let slotSize = boarSize / 8;
+        return { boarSize, slotSize, topMargin, leftMargin }
     }
 
     private drawBoard() {
-        const { boarSize, topMargin, leftMargin } = this.getBoarSizeAndMargin()
+        const { boarSize, slotSize, topMargin, leftMargin } = this.getBoarSizeAndMargin()
         let size = boarSize / 8;
 
         if (Game.instance && Game.instance.board && Game.instance.board.slots) {
             Game.instance.board.slots.forEach(slot => {
-                let yPx = (slot.y * size) + topMargin;
-                let xPx = (slot.x * size) + leftMargin;
+                let yPx = (slot.y * slotSize) + topMargin;
+                let xPx = (slot.x * slotSize) + leftMargin;
 
-                this.drawScuare(xPx, yPx, slot.color, size)
+                this.drawScuare(xPx, yPx, slot.color, slotSize)
 
                 if (slot.piece) {
-                    this.ctx.drawImage(this.imgs[slot.piece.img], xPx, yPx, size, size);
+                    if (!slot.piece.isSelected) {
+                        this.ctx.drawImage(this.imgs[slot.piece.img], xPx, yPx, slotSize, slotSize);
+                    } else {
+
+                    }
                 }
             });
         }

@@ -4,10 +4,16 @@ import { eColor } from './game.js';
 export abstract class Piece {
     private _player: eColor;
     private _type: ePieceType
+    public y: number
+    public x: number
+    public isSelected:boolean
 
-    constructor(player: eColor, type: ePieceType) {
+    constructor(player: eColor, type: ePieceType, y: number, x: number) {
         this._player = player;
         this._type = type;
+        this.y = y;
+        this.x = x;
+        this.isSelected = false
     }
 
     get player() {
@@ -17,12 +23,12 @@ export abstract class Piece {
         return this._type
     }
     get img() {
-        return this._type+'_'+this._player
+        return this._type + '_' + this._player
     }
 
 }
 
-export enum ePieceType{
+export enum ePieceType {
     King = "King",
     Queen = "Queen",
     Horse = "Horse",

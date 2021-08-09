@@ -7,6 +7,7 @@ export class Game{
         if (Game._instance) {
             throw "Ya existe una instancia de Game";
         }
+        console.log("Game instance")
         Game._instance = this
         this.starGame()
     }
@@ -18,6 +19,7 @@ export class Game{
     private nextTime: number = 0
     private delay: number = Math.round(1000 / 24)
     public board: Board | null = null
+    public turn:eColor
 
     private frameLoop(time: number) {
         if (time < Game.instance.nextTime) {
@@ -30,8 +32,9 @@ export class Game{
     }
     
     public starGame(){
-        console.log("Game Start");
+        // console.log("Game Start");
         Game.instance.board = new Board();
+        Game.instance.turn = eColor.white;
         (window as any).requestAnimationFrame(Game.instance.frameLoop);
     }
 }
