@@ -9,7 +9,6 @@ export class Game {
         if (Game._instance) {
             throw "Ya existe una instancia de Game";
         }
-        // console.log("Game instance")
         Game._instance = this
         this.starGame()
     }

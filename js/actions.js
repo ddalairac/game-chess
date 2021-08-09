@@ -13,6 +13,7 @@ export class Actions {
     }
     onClick() {
         const { boarSize, slotSize, topMargin, leftMargin, mouse } = this.moveParams;
+        Game.instance.messages.setFeedback("some text");
         let slot = this.getSlotOnMousePosition();
         if (slot && slot.piece) {
             slot.piece.isSelected = true;
@@ -23,9 +24,14 @@ export class Actions {
         let slot = this.getSlotOnMousePosition();
         if (slot) {
             this.movePiece(slot, Game.instance.board.selectedPiece);
+            Game.instance.board.selectedPiece.isSelected = false;
+            Game.instance.board.selectedPiece = null;
         }
-        Game.instance.board.selectedPiece.isSelected = false;
-        Game.instance.board.selectedPiece = null;
+    }
+    setValidMoves() {
+    }
+    isAValidMove(slot, piece) {
+        return true;
     }
     movePiece(slot, piece) {
         let previousSlot = Game.instance.board.slots.find(slot => slot.piece == piece);

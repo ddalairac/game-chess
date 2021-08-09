@@ -5,30 +5,22 @@ export class Render {
         if (Render._instance) {
             throw "Ya existe una instancia de Render";
         }
-        // console.log("Render instance")
         Render._instance = this
         this.canvas = document.getElementById("stage") as HTMLCanvasElement;
         this.ctx = this.canvas.getContext("2d") as CanvasRenderingContext2D;
 
-        this.getImgs();
-
-        // set Canvas Size
+        this.setImgCache();
         this.rezize()
         window.onresize = function () {
             Render.instance.rezize()
         }
     }
+
     private static _instance: Render
     public static get instance() {
         return this._instance;
     }
-    
-    private get stageLimitX() {
-        return this.ctx.canvas.width
-    }
-    private get stageLimitY() {
-        return this.ctx.canvas.height
-    }
+
     private ctx: CanvasRenderingContext2D
     private imgs = {}
 
@@ -45,8 +37,7 @@ export class Render {
         this.draw()
     }
 
-    // cache img element
-    private getImgs() {
+    private setImgCache() {
         this.imgs = {
             King_black: document.getElementById("King_black"),
             Queen_black: document.getElementById("Queen_black"),
@@ -73,7 +64,7 @@ export class Render {
 
         let xSpace = (this.canvas.width - boarSize > 0) ? this.canvas.width - boarSize : 0;
         let ySpace = (this.canvas.height - boarSize > 0) ? this.canvas.height - boarSize : 0;
-        
+
         this.topMargin = (ySpace > 0) ? ySpace / 2 : 0;
         this.leftMargin = (xSpace > 0) ? xSpace / 2 : 0;
         this.slotSize = boarSize / 8;
@@ -85,8 +76,6 @@ export class Render {
         this.ctx.fillStyle = (color == eColor.white) ? "#FFF" : "#666";
         this.ctx.fill();
     }
-
-
 
     private drawBoard() {
         if (Game.instance && Game.instance.board && Game.instance.board.slots) {
@@ -105,6 +94,7 @@ export class Render {
             });
         }
     }
+
     private drawMovingPiece() {
         if (Game.instance && Game.instance.board && Game.instance.board.selectedPiece) {
             let Xmouse = Game.instance.mouse.x - (this.slotSize/2);
@@ -113,6 +103,7 @@ export class Render {
             this.ctx.drawImage(this.imgs[piece.img], Xmouse, Ymouse, this.slotSize, this.slotSize);
         }
     }
+
     public draw() {
         // Delete canvas elements
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);

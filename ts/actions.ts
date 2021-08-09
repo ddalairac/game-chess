@@ -20,7 +20,7 @@ export class Actions {
 
     public onClick() {
         const { boarSize, slotSize, topMargin, leftMargin, mouse } = this.moveParams
-
+        Game.instance.messages.setFeedback("some text")
         let slot: BoardSlot | undefined = this.getSlotOnMousePosition()
         if (slot && slot.piece) {
             slot.piece.isSelected = true
@@ -30,13 +30,22 @@ export class Actions {
     public onRelease() {
         let slot: BoardSlot | undefined = this.getSlotOnMousePosition()
         if (slot) {
+            // TODO validate move
+            // TODO Render valid moves on board
             this.movePiece(slot, Game.instance.board.selectedPiece)
-        }
 
-        Game.instance.board.selectedPiece.isSelected = false
-        Game.instance.board.selectedPiece = null
+            Game.instance.board.selectedPiece.isSelected = false
+            Game.instance.board.selectedPiece = null
+        }
     }
 
+    private setValidMoves(){
+
+    }
+    private isAValidMove(slot: BoardSlot, piece: Piece): boolean {
+
+        return true
+    }
     private movePiece(slot: BoardSlot, piece: Piece) {
         let previousSlot = Game.instance.board.slots.find(slot=>slot.piece == piece)
         slot.piece = piece

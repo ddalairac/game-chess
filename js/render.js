@@ -12,7 +12,7 @@ export class Render {
         Render._instance = this;
         this.canvas = document.getElementById("stage");
         this.ctx = this.canvas.getContext("2d");
-        this.getImgs();
+        this.setImgCache();
         this.rezize();
         window.onresize = function () {
             Render.instance.rezize();
@@ -21,19 +21,13 @@ export class Render {
     static get instance() {
         return this._instance;
     }
-    get stageLimitX() {
-        return this.ctx.canvas.width;
-    }
-    get stageLimitY() {
-        return this.ctx.canvas.height;
-    }
     rezize() {
         this.ctx.canvas.width = window.innerWidth;
         this.ctx.canvas.height = window.innerHeight;
         this.getBoarSizeAndMargin();
         this.draw();
     }
-    getImgs() {
+    setImgCache() {
         this.imgs = {
             King_black: document.getElementById("King_black"),
             Queen_black: document.getElementById("Queen_black"),
