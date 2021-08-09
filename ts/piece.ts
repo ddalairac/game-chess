@@ -22,6 +22,7 @@ export abstract class Piece {
         return this._type + '_' + this._player
     }
 
+
 }
 
 export enum ePieceType {

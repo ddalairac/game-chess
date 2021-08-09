@@ -1,4 +1,6 @@
+import { Actions } from './actions.js';
 import { Board } from './board.js';
+import { Messages } from './messages.js';
 import { Render } from './render.js';
 export class Game {
     constructor() {
@@ -13,7 +15,6 @@ export class Game {
         if (Game._instance) {
             throw "Ya existe una instancia de Game";
         }
-        console.log("Game instance");
         Game._instance = this;
         this.starGame();
     }
@@ -34,6 +35,8 @@ export class Game {
     starGame() {
         Game.instance.board = new Board();
         Game.instance.playerTurn = eColor.white;
+        Game.instance.actions = new Actions();
+        Game.instance.messages = new Messages();
         window.requestAnimationFrame(Game.instance.frameLoop);
     }
 }

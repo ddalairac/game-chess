@@ -49,23 +49,24 @@ export class Render {
             Pawn_white: document.getElementById("Pawn_white"),
         };
     }
-    drawScuare(x, y, color, size) {
-        this.ctx.beginPath();
-        this.ctx.rect(x, y, size, size);
-        this.ctx.fillStyle = (color == eColor.white) ? "#FFF" : "#666";
-        this.ctx.fill();
-    }
     getBoarSizeAndMargin() {
         let boarSize = (this.canvas.width - this.canvas.height < 0) ? this.canvas.width : this.canvas.height;
         if (boarSize > 600) {
             boarSize = 600;
         }
-        this.boarSize = boarSize - 30;
-        let xSpace = (this.stageLimitX - boarSize > 0) ? this.stageLimitX - boarSize : 0;
-        let ySpace = (this.stageLimitY - boarSize > 0) ? this.stageLimitY - boarSize : 0;
+        boarSize = boarSize - 30;
+        this.boarSize = boarSize;
+        let xSpace = (this.canvas.width - boarSize > 0) ? this.canvas.width - boarSize : 0;
+        let ySpace = (this.canvas.height - boarSize > 0) ? this.canvas.height - boarSize : 0;
         this.topMargin = (ySpace > 0) ? ySpace / 2 : 0;
         this.leftMargin = (xSpace > 0) ? xSpace / 2 : 0;
         this.slotSize = boarSize / 8;
+    }
+    drawScuare(x, y, color, size) {
+        this.ctx.beginPath();
+        this.ctx.rect(x, y, size, size);
+        this.ctx.fillStyle = (color == eColor.white) ? "#FFF" : "#666";
+        this.ctx.fill();
     }
     drawBoard() {
         if (Game.instance && Game.instance.board && Game.instance.board.slots) {

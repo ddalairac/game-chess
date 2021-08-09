@@ -1,5 +1,6 @@
+import { Actions } from './actions.js';
 import { Board } from './board.js';
-import { Piece } from './piece.js';
+import { Messages } from './messages.js';
 import { Render } from './render.js';
 
 export class Game {
@@ -8,7 +9,7 @@ export class Game {
         if (Game._instance) {
             throw "Ya existe una instancia de Game";
         }
-        console.log("Game instance")
+        // console.log("Game instance")
         Game._instance = this
         this.starGame()
     }
@@ -20,7 +21,9 @@ export class Game {
     private nextTime: number = 0
     private delay: number = Math.round(1000 / 24)
     public board: Board | null = null
+    public messages: Messages;
     public playerTurn: eColor
+    public actions
     public mouse = {
         x: 0,
         y: 0
@@ -44,6 +47,8 @@ export class Game {
         // console.log("Game Start");
         Game.instance.board = new Board();
         Game.instance.playerTurn = eColor.white;
+        Game.instance.actions = new Actions();
+        Game.instance.messages = new Messages();
         (window as any).requestAnimationFrame(Game.instance.frameLoop);
     }
 }

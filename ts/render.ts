@@ -22,15 +22,17 @@ export class Render {
     public static get instance() {
         return this._instance;
     }
-    get stageLimitX() {
+    
+    private get stageLimitX() {
         return this.ctx.canvas.width
     }
-    get stageLimitY() {
+    private get stageLimitY() {
         return this.ctx.canvas.height
     }
-    public ctx: CanvasRenderingContext2D
-    public canvas: HTMLCanvasElement
+    private ctx: CanvasRenderingContext2D
     private imgs = {}
+
+    public canvas: HTMLCanvasElement
     public boarSize: number = 0
     public slotSize: number = 0
     public topMargin: number = 0
@@ -61,6 +63,22 @@ export class Render {
         }
     }
 
+    private getBoarSizeAndMargin() {
+        let boarSize = (this.canvas.width - this.canvas.height < 0) ? this.canvas.width : this.canvas.height;
+        if (boarSize > 600) {
+            boarSize = 600
+        }
+        boarSize = boarSize - 30;
+        this.boarSize = boarSize;
+
+        let xSpace = (this.canvas.width - boarSize > 0) ? this.canvas.width - boarSize : 0;
+        let ySpace = (this.canvas.height - boarSize > 0) ? this.canvas.height - boarSize : 0;
+        
+        this.topMargin = (ySpace > 0) ? ySpace / 2 : 0;
+        this.leftMargin = (xSpace > 0) ? xSpace / 2 : 0;
+        this.slotSize = boarSize / 8;
+    }
+
     private drawScuare(x: number, y: number, color: eColor, size: number) {
         this.ctx.beginPath();
         this.ctx.rect(x, y, size, size);
@@ -68,22 +86,6 @@ export class Render {
         this.ctx.fill();
     }
 
-    public getBoarSizeAndMargin() {
-        let boarSize = (this.canvas.width - this.canvas.height < 0) ? this.canvas.width : this.canvas.height;
-        if (boarSize > 600) {
-            boarSize = 600
-        }
-        this.boarSize = boarSize - 30;
-
-        let xSpace = (this.stageLimitX - boarSize > 0) ? this.stageLimitX - boarSize : 0;
-        let ySpace = (this.stageLimitY - boarSize > 0) ? this.stageLimitY - boarSize : 0;
-
-        this.topMargin = (ySpace > 0) ? ySpace / 2 : 0;
-        this.leftMargin = (xSpace > 0) ? xSpace / 2 : 0;
-        this.slotSize = boarSize / 8;
-
-        // return { boarSize, slotSize, topMargin, leftMargin }
-    }
 
 
     private drawBoard() {
@@ -112,10 +114,10 @@ export class Render {
         }
     }
     public draw() {
-        // borrar canvas
+        // Delete canvas elements
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
-        // Dibujar canvas
+        // Draw canvas
         this.drawBoard()
         this.drawMovingPiece()
     }

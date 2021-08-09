@@ -1,14 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Game Base</title>
+    <title>Chess Game</title>
     <link rel="stylesheet" type="text/css" href="css/styles.css" />
 </head>
+
 <body>
-    <canvas id="stage" width="300" height="300"></canvas>
+    <div class="actions">
+        <button>New Game</button>
+    </div>
+    <div class="game">
+        <canvas id="stage" width="300" height="300"></canvas>
+    </div>
+    <div class="messages">
+        <p class="feedback">Feedback</p>
+        <div class="times">
+            <p class="time">Blacks time: <span class="blacks-time">12:54</span></p>
+            <p class="time">Total time: <span class="total-time">12:54</span></p>
+            <p class="time">Whites time: <span class="whites-time">12:54</span></p>
+        </div>
+    </div>
 
     <img id="King_black" src="./img/King_black.svg" alt="King_black">
     <img id="Queen_black" src="./img/Queen_black.svg" alt="Queen_black">
@@ -26,4 +41,5 @@
 
     <script src="js/main.js" type="module"></script>
 </body>
+
 </html>
