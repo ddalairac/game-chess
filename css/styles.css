@@ -18,4 +18,8 @@ canvas {
   margin: 0 auto;
 }
 
+img {
+  display: none;
+}
+
 /*# sourceMappingURL=styles.css.map */

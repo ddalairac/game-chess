@@ -1,1 +1,1 @@
-{"version":3,"file":"pawn.js","sourceRoot":"","sources":["../../ts/pieces/pawn.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,UAAU,EAAE,KAAK,EAAE,MAAM,aAAa,CAAA;AAE/C,MAAM,OAAO,IAAK,SAAQ,KAAK;IAC3B,YAAY,MAAe;QACvB,KAAK,CAAC,MAAM,EAAE,UAAU,CAAC,IAAI,CAAC,CAAA;IAClC,CAAC;CAEJ"}
+{"version":3,"file":"pawn.js","sourceRoot":"","sources":["../../ts/pieces/pawn.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,UAAU,EAAE,KAAK,EAAE,MAAM,aAAa,CAAA;AAE/C,MAAM,OAAO,IAAK,SAAQ,KAAK;IAC3B,YAAY,MAAc;QACtB,KAAK,CAAC,MAAM,EAAE,UAAU,CAAC,IAAI,CAAC,CAAA;IAClC,CAAC;CAEJ"}

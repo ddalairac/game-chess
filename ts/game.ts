@@ -1,3 +1,4 @@
+import { Board } from './board.js';
 import { Render } from './render.js';
 
 export class Game{
@@ -16,6 +17,7 @@ export class Game{
 
     private nextTime: number = 0
     private delay: number = Math.round(1000 / 24)
+    public board: Board | null = null
 
     private frameLoop(time: number) {
         if (time < Game.instance.nextTime) {
@@ -29,10 +31,11 @@ export class Game{
     
     public starGame(){
         console.log("Game Start");
+        Game.instance.board = new Board();
         (window as any).requestAnimationFrame(Game.instance.frameLoop);
     }
 }
-export enum ePlayer{
+export enum eColor{
     white="white",
     black="black"
 }

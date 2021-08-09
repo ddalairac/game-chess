@@ -1,10 +1,11 @@
-import { ePlayer } from './game.js';
+import { eColor } from './game.js';
 
+// SVG images: https://commons.wikimedia.org/wiki/Template:SVG_chess_pieces
 export abstract class Piece {
-    private _player: ePlayer;
+    private _player: eColor;
     private _type: ePieceType
 
-    constructor(player: ePlayer, type: ePieceType) {
+    constructor(player: eColor, type: ePieceType) {
         this._player = player;
         this._type = type;
     }
@@ -15,6 +16,10 @@ export abstract class Piece {
     get type() {
         return this._type
     }
+    get img() {
+        return this._type+'_'+this._player
+    }
+
 }
 
 export enum ePieceType{

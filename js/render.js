@@ -1,20 +1,18 @@
+import { eColor, Game } from './game.js';
 export class Render {
     constructor() {
+        this.imgs = {};
         if (Render._instance) {
             throw "Ya existe una instancia de Render";
         }
         Render._instance = this;
         this.canvas = document.getElementById("stage");
         this.ctx = this.canvas.getContext("2d");
+        this.getImgs();
         this.rezize();
         window.onresize = function () {
             Render.instance.rezize();
         };
-    }
-    rezize() {
-        this.ctx.canvas.width = window.innerWidth;
-        this.ctx.canvas.height = window.innerHeight;
-        this.draw();
     }
     static get instance() {
         return this._instance;
@@ -25,25 +23,57 @@ export class Render {
     get stageLimitY() {
         return this.ctx.canvas.height;
     }
-    drawScuare(x, y, size, even) {
+    rezize() {
+        this.ctx.canvas.width = window.innerWidth;
+        this.ctx.canvas.height = window.innerHeight;
+        this.draw();
+    }
+    getImgs() {
+        this.imgs = {
+            King_black: document.getElementById("King_black"),
+            Queen_black: document.getElementById("Queen_black"),
+            Bishop_black: document.getElementById("Bishop_black"),
+            Horse_black: document.getElementById("Horse_black"),
+            Tower_black: document.getElementById("Tower_black"),
+            Pawn_black: document.getElementById("Pawn_black"),
+            King_white: document.getElementById("King_white"),
+            Queen_white: document.getElementById("Queen_white"),
+            Bishop_white: document.getElementById("Bishop_white"),
+            Horse_white: document.getElementById("Horse_white"),
+            Tower_white: document.getElementById("Tower_white"),
+            Pawn_white: document.getElementById("Pawn_white"),
+        };
+    }
+    drawScuare(x, y, color, size) {
         this.ctx.beginPath();
         this.ctx.rect(x, y, size, size);
-        this.ctx.fillStyle = even ? "#FFF" : "#000";
-        this.ctx.strokeStyle = "black";
-        this.ctx.lineWidth = 1;
-        this.ctx.stroke();
+        this.ctx.fillStyle = (color == eColor.white) ? "#FFF" : "#666";
         this.ctx.fill();
     }
+    getBoarSizeAndMargin() {
+        let boarSize = (this.canvas.width - this.canvas.height < 0) ? this.canvas.width : this.canvas.height;
+        if (boarSize > 600) {
+            boarSize = 600;
+        }
+        boarSize = boarSize - 30;
+        let xSpace = (this.stageLimitX - boarSize > 0) ? this.stageLimitX - boarSize : 0;
+        let ySpace = (this.stageLimitY - boarSize > 0) ? this.stageLimitY - boarSize : 0;
+        let topMargin = (ySpace > 0) ? ySpace / 2 : 0;
+        let leftMargin = (xSpace > 0) ? xSpace / 2 : 0;
+        return { boarSize, topMargin, leftMargin };
+    }
     drawBoard() {
-        let size = (this.stageLimitX - 10) / 8;
-        let even = false;
-        for (let indexRow = 0; indexRow < 8; indexRow++) {
-            even = !even;
-            for (let index = 0; index < 8; index++) {
-                even = !even;
-                even = even ? true : false;
-                this.drawScuare((index * size) + 5, (indexRow * size) + 5, size, even);
-            }
+        const { boarSize, topMargin, leftMargin } = this.getBoarSizeAndMargin();
+        let size = boarSize / 8;
+        if (Game.instance && Game.instance.board && Game.instance.board.slots) {
+            Game.instance.board.slots.forEach(slot => {
+                let yPx = (slot.y * size) + topMargin;
+                let xPx = (slot.x * size) + leftMargin;
+                this.drawScuare(xPx, yPx, slot.color, size);
+                if (slot.piece) {
+                    this.ctx.drawImage(this.imgs[slot.piece.img], xPx, yPx, size, size);
+                }
+            });
         }
     }
     draw() {

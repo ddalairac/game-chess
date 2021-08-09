@@ -1,8 +1,10 @@
+import { Board } from './board.js';
 import { Render } from './render.js';
 export class Game {
     constructor() {
         this.nextTime = 0;
         this.delay = Math.round(1000 / 24);
+        this.board = null;
         if (Game._instance) {
             throw "Ya existe una instancia de Game";
         }
@@ -22,12 +24,13 @@ export class Game {
     }
     starGame() {
         console.log("Game Start");
+        Game.instance.board = new Board();
         window.requestAnimationFrame(Game.instance.frameLoop);
     }
 }
-export var ePlayer;
-(function (ePlayer) {
-    ePlayer["white"] = "white";
-    ePlayer["black"] = "black";
-})(ePlayer || (ePlayer = {}));
+export var eColor;
+(function (eColor) {
+    eColor["white"] = "white";
+    eColor["black"] = "black";
+})(eColor || (eColor = {}));
 //# sourceMappingURL=game.js.map

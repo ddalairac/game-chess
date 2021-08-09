@@ -9,6 +9,9 @@ export class Piece {
     get type() {
         return this._type;
     }
+    get img() {
+        return this._type + '_' + this._player;
+    }
 }
 export var ePieceType;
 (function (ePieceType) {
