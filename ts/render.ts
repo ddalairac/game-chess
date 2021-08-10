@@ -70,10 +70,17 @@ export class Render {
         this.slotSize = boarSize / 8;
     }
 
-    private drawScuare(x: number, y: number, color: eColor, size: number) {
+    private drawScuare(x: number, y: number, color: eColor, size: number, isValidMove: boolean = false) {
         this.ctx.beginPath();
         this.ctx.rect(x, y, size, size);
         this.ctx.fillStyle = (color == eColor.white) ? "#FFF" : "#666";
+        if (!isValidMove) {
+            this.ctx.strokeStyle = (color == eColor.white) ? "#FFF" : "#666";
+        } else {
+            this.ctx.strokeStyle = "#bf0000";
+        }
+        this.ctx.lineWidth = 5;
+        this.ctx.stroke();
         this.ctx.fill();
     }
 
@@ -83,7 +90,7 @@ export class Render {
                 // Draw Board scuare
                 let yPx = (slot.y * this.slotSize) + this.topMargin;
                 let xPx = (slot.x * this.slotSize) + this.leftMargin;
-                this.drawScuare(xPx, yPx, slot.color, this.slotSize)
+                this.drawScuare(xPx, yPx, slot.color, this.slotSize, slot.isValidMove)
 
                 // Draw static pieces
                 if (slot.piece) {
@@ -97,8 +104,8 @@ export class Render {
 
     private drawMovingPiece() {
         if (Game.instance && Game.instance.board && Game.instance.board.selectedPiece) {
-            let Xmouse = Game.instance.mouse.x - (this.slotSize/2);
-            let Ymouse = Game.instance.mouse.y - (this.slotSize/2);
+            let Xmouse = Game.instance.mouse.x - (this.slotSize / 2);
+            let Ymouse = Game.instance.mouse.y - (this.slotSize / 2);
             let piece = Game.instance.board.selectedPiece;
             this.ctx.drawImage(this.imgs[piece.img], Xmouse, Ymouse, this.slotSize, this.slotSize);
         }

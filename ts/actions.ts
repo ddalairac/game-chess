@@ -20,11 +20,13 @@ export class Actions {
 
     public onClick() {
         const { boarSize, slotSize, topMargin, leftMargin, mouse } = this.moveParams
-        Game.instance.messages.setFeedback("some text")
+        // Game.instance.messages.setFeedback("some text")
+
         let slot: BoardSlot | undefined = this.getSlotOnMousePosition()
         if (slot && slot.piece) {
             slot.piece.isSelected = true
             Game.instance.board.selectedPiece = slot.piece
+            this.setValidMoves(slot, slot.piece)
         }
     }
     public onRelease() {
@@ -33,23 +35,18 @@ export class Actions {
             // TODO validate move
             // TODO Render valid moves on board
             this.movePiece(slot, Game.instance.board.selectedPiece)
-
-            Game.instance.board.selectedPiece.isSelected = false
-            Game.instance.board.selectedPiece = null
         }
+        this.resetValidMoves()
+        Game.instance.board.selectedPiece.isSelected = false
+        Game.instance.board.selectedPiece = null
     }
 
-    private setValidMoves(){
-
-    }
-    private isAValidMove(slot: BoardSlot, piece: Piece): boolean {
-
-        return true
-    }
     private movePiece(slot: BoardSlot, piece: Piece) {
-        let previousSlot = Game.instance.board.slots.find(slot=>slot.piece == piece)
-        slot.piece = piece
-        previousSlot.piece = null
+        let previousSlot = Game.instance.board.slots.find(slot => slot.piece == piece)
+        if (previousSlot != slot) {
+            slot.piece = piece
+            previousSlot.piece = null
+        }
     }
 
     private getSlotOnMousePosition(): BoardSlot | undefined {
@@ -63,6 +60,19 @@ export class Actions {
 
                 return true
             }
+        })
+    }
+
+    private setValidMoves(slotOrigen: BoardSlot, piece: Piece) {
+        Game.instance.board.slots.forEach(slotDestiny => {
+            if (Piece.isMovePosible(slotOrigen, slotDestiny, piece) {
+                slotDestiny.isValidMove = true
+            }
+        })
+    }
+    private resetValidMoves() {
+        Game.instance.board.slots.forEach(slot => {
+            slot.isValidMove = false
         })
     }
 }

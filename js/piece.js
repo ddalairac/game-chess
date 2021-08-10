@@ -1,17 +1,23 @@
 export class Piece {
-    constructor(player, type) {
-        this._player = player;
+    constructor(color, type) {
+        this._color = color;
         this._type = type;
         this.isSelected = false;
     }
-    get player() {
-        return this._player;
+    get color() {
+        return this._color;
     }
     get type() {
         return this._type;
     }
     get img() {
-        return this._type + '_' + this._player;
+        return this._type + '_' + this._color;
+    }
+    static isMovePosible(slotOrigen, slotDestiny, piece) {
+        if (slotOrigen != slotDestiny) {
+            return true;
+        }
+        return false;
     }
 }
 export var ePieceType;
