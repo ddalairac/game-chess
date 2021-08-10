@@ -57,7 +57,7 @@ export class EventHandler {
     // ******* Touch Events ******* 
     private onTouchStart(e: TouchEvent) {
         e.preventDefault();
-        console.log("onTouchStart", e)
+        // console.log("onTouchStart", e)
         EventHandler.onPress(e.touches[0].clientX, e.touches[0].clientY)
     }
     private onTouchEnd(e: TouchEvent) {
@@ -67,7 +67,7 @@ export class EventHandler {
     }
     private onTouchMove(e: TouchEvent) {
         e.preventDefault();
-        console.log("onTouchMove", e)
+        // console.log("onTouchMove", e)
         EventHandler.onMove(e.touches[0].clientX, e.touches[0].clientY)
     }
 }

@@ -6,5 +6,8 @@ export class BoardSlot {
         this.piece = piece;
         this.isValidMove = false;
     }
+    static getIndex(slot) {
+        return slot.y * 8 + slot.x;
+    }
 }
 //# sourceMappingURL=board-slot.js.map

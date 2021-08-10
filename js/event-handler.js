@@ -39,7 +39,6 @@ export class EventHandler {
     }
     onTouchStart(e) {
         e.preventDefault();
-        console.log("onTouchStart", e);
         EventHandler.onPress(e.touches[0].clientX, e.touches[0].clientY);
     }
     onTouchEnd(e) {
@@ -48,7 +47,6 @@ export class EventHandler {
     }
     onTouchMove(e) {
         e.preventDefault();
-        console.log("onTouchMove", e);
         EventHandler.onMove(e.touches[0].clientX, e.touches[0].clientY);
     }
 }

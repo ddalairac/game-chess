@@ -37,13 +37,14 @@ export class Actions {
             this.movePiece(slot, Game.instance.board.selectedPiece)
         }
         this.resetValidMoves()
-        Game.instance.board.selectedPiece.isSelected = false
+        if (Game.instance.board.selectedPiece) Game.instance.board.selectedPiece.isSelected = false
         Game.instance.board.selectedPiece = null
     }
 
     private movePiece(slot: BoardSlot, piece: Piece) {
         let previousSlot = Game.instance.board.slots.find(slot => slot.piece == piece)
         if (previousSlot != slot) {
+            if (piece) piece.isFirstMove = false
             slot.piece = piece
             previousSlot.piece = null
         }
@@ -64,11 +65,11 @@ export class Actions {
     }
 
     private setValidMoves(slotOrigen: BoardSlot, piece: Piece) {
-        Game.instance.board.slots.forEach(slotDestiny => {
-            if (Piece.isMovePosible(slotOrigen, slotDestiny, piece) {
-                slotDestiny.isValidMove = true
-            }
+        let slotsPosibles: Array<BoardSlot> = piece.getPosibleMoves(slotOrigen)
+        slotsPosibles.forEach(slotDestiny => {
+            slotDestiny.isValidMove = true
         })
+        console.log("slotsPosibles", slotsPosibles)
     }
     private resetValidMoves() {
         Game.instance.board.slots.forEach(slot => {

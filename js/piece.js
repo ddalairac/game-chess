@@ -1,8 +1,11 @@
+import { BoardSlot } from './board-slot.js';
+import { eColor, Game } from './game.js';
 export class Piece {
     constructor(color, type) {
         this._color = color;
         this._type = type;
         this.isSelected = false;
+        this.isFirstMove = true;
     }
     get color() {
         return this._color;
@@ -13,11 +16,15 @@ export class Piece {
     get img() {
         return this._type + '_' + this._color;
     }
-    static isMovePosible(slotOrigen, slotDestiny, piece) {
-        if (slotOrigen != slotDestiny) {
-            return true;
-        }
-        return false;
+    get colorOponent() {
+        return (this._color == eColor.white) ? eColor.black : eColor.white;
+    }
+    getPosibleMoves(slotOrigen) {
+        let slots = Game.instance.board.slots;
+        let index = BoardSlot.getIndex(slotOrigen);
+        let direction = (slotOrigen.color === eColor.white) ? 1 : -1;
+        let slotsPosibles = [];
+        return slotsPosibles;
     }
 }
 export var ePieceType;
