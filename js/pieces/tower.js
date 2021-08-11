@@ -7,13 +7,18 @@ export class Tower extends Piece {
     }
     getPosibleMoves(slotOrigen) {
         let slots = Game.instance.board.slots;
+        let slotsPosibles = [];
+        return [...slotsPosibles, ...Tower.getPosibleMoves(slotOrigen, this)];
+    }
+    static getPosibleMoves(slotOrigen, piece) {
+        let slots = Game.instance.board.slots;
         let index = BoardSlot.getIndex(slotOrigen);
         let slotsPosibles = [];
         let leftLimit = slotOrigen.y * 8;
         let rightLimit = slotOrigen.y * 8 + 8;
         for (let i = index + 8; i < 64; i += 8) {
             let slot = slots[i];
-            if (!slot.piece || slot.piece.color != this.color) {
+            if (Piece.isEmptyOrCanBeEat(slot, piece)) {
                 slotsPosibles.push(slot);
             }
             if (slot.piece)
@@ -21,7 +26,7 @@ export class Tower extends Piece {
         }
         for (let i = index - 8; i >= 0; i -= 8) {
             let slot = slots[i];
-            if (!slot.piece || slot.piece.color != this.color) {
+            if (Piece.isEmptyOrCanBeEat(slot, piece)) {
                 slotsPosibles.push(slot);
             }
             if (slot.piece)
@@ -29,7 +34,7 @@ export class Tower extends Piece {
         }
         for (let i = index + 1; i < rightLimit; i++) {
             let slot = slots[i];
-            if (!slot.piece || slot.piece.color != this.color) {
+            if (Piece.isEmptyOrCanBeEat(slot, piece)) {
                 slotsPosibles.push(slot);
             }
             if (slot.piece)
@@ -37,7 +42,7 @@ export class Tower extends Piece {
         }
         for (let i = index - 1; i >= leftLimit; i--) {
             let slot = slots[i];
-            if (!slot.piece || slot.piece.color != this.color) {
+            if (Piece.isEmptyOrCanBeEat(slot, piece)) {
                 slotsPosibles.push(slot);
             }
             if (slot.piece)

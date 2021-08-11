@@ -56,37 +56,28 @@ export class Render {
         this.leftMargin = (xSpace > 0) ? xSpace / 2 : 0;
         this.slotSize = boarSize / 8;
     }
-    drawScuare(x, y, color, size) {
+    drawScuare(x, y, color, size, isValidMove) {
         this.ctx.beginPath();
         this.ctx.rect(x, y, size, size);
-        this.ctx.fillStyle = (color == eColor.white) ? "#FFF" : "#666";
-        this.ctx.fill();
-    }
-    drawMovePosible(x, y, color, size, isValidMove = false) {
         if (isValidMove) {
-            this.ctx.beginPath();
-            this.ctx.rect(x, y, size, size);
-            this.ctx.strokeStyle = "#bf0000";
-            this.ctx.lineWidth = 3;
-            this.ctx.stroke();
+            this.ctx.fillStyle = (color == eColor.white) ? "#d9ff8e" : "#a8d452";
         }
+        else {
+            this.ctx.fillStyle = (color == eColor.white) ? "#FFF" : "#999";
+        }
+        this.ctx.fill();
     }
     drawBoard() {
         if (Game.instance && Game.instance.board && Game.instance.board.slots) {
             Game.instance.board.slots.forEach(slot => {
                 let yPx = (slot.y * this.slotSize) + this.topMargin;
                 let xPx = (slot.x * this.slotSize) + this.leftMargin;
-                this.drawScuare(xPx, yPx, slot.color, this.slotSize);
+                this.drawScuare(xPx, yPx, slot.color, this.slotSize, slot.isValidMove);
                 if (slot.piece) {
                     if (!slot.piece.isSelected) {
                         this.ctx.drawImage(this.imgs[slot.piece.img], xPx, yPx, this.slotSize, this.slotSize);
                     }
                 }
-            });
-            Game.instance.board.slots.forEach(slot => {
-                let yPx = (slot.y * this.slotSize) + this.topMargin;
-                let xPx = (slot.x * this.slotSize) + this.leftMargin;
-                this.drawMovePosible(xPx, yPx, slot.color, this.slotSize, slot.isValidMove);
             });
         }
     }

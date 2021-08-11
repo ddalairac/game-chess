@@ -22,7 +22,9 @@ export class Actions {
     }
     onRelease() {
         let slot = this.getSlotOnMousePosition();
-        if (slot) {
+        let slotsPosibles = this.getValidMoves();
+        if (slot &&
+            slotsPosibles.filter(s => s == slot).length > 0) {
             this.movePiece(slot, Game.instance.board.selectedPiece);
         }
         this.resetValidMoves();
@@ -49,15 +51,17 @@ export class Actions {
             }
         });
     }
+    getValidMoves() {
+        return Game.instance.board.slots.filter(slot => slot.isValidMove);
+    }
     setValidMoves(slotOrigen, piece) {
         let slotsPosibles = piece.getPosibleMoves(slotOrigen);
-        slotsPosibles.forEach(slotDestiny => {
+        slotsPosibles.map(slotDestiny => {
             slotDestiny.isValidMove = true;
         });
-        console.log("slotsPosibles", slotsPosibles);
     }
     resetValidMoves() {
-        Game.instance.board.slots.forEach(slot => {
+        Game.instance.board.slots.map(slot => {
             slot.isValidMove = false;
         });
     }

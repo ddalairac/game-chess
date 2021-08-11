@@ -1,5 +1,4 @@
-import { BoardSlot } from './board-slot.js';
-import { eColor, Game } from './game.js';
+import { eColor } from './game.js';
 export class Piece {
     constructor(color, type) {
         this._color = color;
@@ -19,12 +18,11 @@ export class Piece {
     get colorOponent() {
         return (this._color == eColor.white) ? eColor.black : eColor.white;
     }
-    getPosibleMoves(slotOrigen) {
-        let slots = Game.instance.board.slots;
-        let index = BoardSlot.getIndex(slotOrigen);
-        let direction = (slotOrigen.color === eColor.white) ? 1 : -1;
-        let slotsPosibles = [];
-        return slotsPosibles;
+    static isEmptyOrCanBeEat(slotDestiny, piece) {
+        return (!slotDestiny.piece || slotDestiny.piece.color != piece.color);
+    }
+    static hasAPieceAndCanBeEat(slotDestiny, piece) {
+        return (slotDestiny && slotDestiny.piece && slotDestiny.piece.color == piece.colorOponent);
     }
 }
 export var ePieceType;

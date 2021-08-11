@@ -70,29 +70,17 @@ export class Render {
         this.slotSize = boarSize / 8;
     }
 
-    private drawScuare(x: number, y: number, color: eColor, size: number) {
+    private drawScuare(x: number, y: number, color: eColor, size: number, isValidMove: boolean) {
         this.ctx.beginPath();
         this.ctx.rect(x, y, size, size);
-        this.ctx.fillStyle = (color == eColor.white) ? "#FFF" : "#666";
-        // if (!isValidMove) {
-        //     this.ctx.strokeStyle = (color == eColor.white) ? "#FFF" : "#666";
-        // } else {
-        //     this.ctx.strokeStyle = "#bf0000";
-        // }
-        // this.ctx.lineWidth = 6;
-        // this.ctx.stroke();
-        this.ctx.fill();
-        
-
-    }
-    private drawMovePosible(x: number, y: number, color: eColor, size: number, isValidMove: boolean = false){
         if (isValidMove) {
-            this.ctx.beginPath();
-            this.ctx.rect(x, y, size, size);
-            this.ctx.strokeStyle = "#bf0000";
-            this.ctx.lineWidth = 3;
-            this.ctx.stroke();
+            this.ctx.fillStyle = (color == eColor.white) ? "#d9ff8e" : "#a8d452";
+        } else {
+            this.ctx.fillStyle = (color == eColor.white) ? "#FFF" : "#999";
         }
+        this.ctx.fill();
+
+
     }
 
     private drawBoard() {
@@ -101,7 +89,7 @@ export class Render {
                 // Draw Board scuare
                 let yPx = (slot.y * this.slotSize) + this.topMargin;
                 let xPx = (slot.x * this.slotSize) + this.leftMargin;
-                this.drawScuare(xPx, yPx, slot.color, this.slotSize)
+                this.drawScuare(xPx, yPx, slot.color, this.slotSize, slot.isValidMove)
 
                 // Draw static pieces
                 if (slot.piece) {
@@ -109,13 +97,6 @@ export class Render {
                         this.ctx.drawImage(this.imgs[slot.piece.img], xPx, yPx, this.slotSize, this.slotSize);
                     }
                 }
-            });
-            // so that the slot does not overlap the red line, I use a different loop
-            Game.instance.board.slots.forEach(slot => {
-                // Draw Red scuare
-                let yPx = (slot.y * this.slotSize) + this.topMargin;
-                let xPx = (slot.x * this.slotSize) + this.leftMargin;
-                this.drawMovePosible(xPx, yPx, slot.color, this.slotSize, slot.isValidMove)
             });
         }
     }

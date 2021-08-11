@@ -13,11 +13,11 @@ export class Board {
         this.slots = this.resetBoard();
     }
 
-    public slots: Array<BoardSlot> = []
+    public slots: BoardSlot[] = []
     public selectedPiece: Piece | null = null
 
     public resetBoard() {
-        const slots: Array<BoardSlot> = []
+        const slots: BoardSlot[] = []
         let even = true;
         for (let y = 0; y < 8; y++) {
             even = !even;

@@ -28,13 +28,14 @@ export abstract class Piece {
         return (this._color == eColor.white) ? eColor.black : eColor.white;
     }
 
-    public getPosibleMoves(slotOrigen: BoardSlot): Array<BoardSlot> {
-        let slots: Array<BoardSlot> = Game.instance.board.slots;
-        let index: number = BoardSlot.getIndex(slotOrigen)
-        let direction: number = (slotOrigen.color === eColor.white) ? 1 : -1;
-        let slotsPosibles: Array<BoardSlot> = []
+    public abstract getPosibleMoves(slotOrigen: BoardSlot): BoardSlot[] 
 
-        return slotsPosibles
+    public static isEmptyOrCanBeEat(slotDestiny: BoardSlot, piece: Piece): boolean {
+        return (!slotDestiny.piece || slotDestiny.piece.color != piece.color)
+    }
+
+    public static hasAPieceAndCanBeEat(slotDestiny: BoardSlot, piece: Piece): boolean {
+        return (slotDestiny && slotDestiny.piece && slotDestiny.piece.color == piece.colorOponent)
     }
 
 }

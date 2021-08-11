@@ -10,22 +10,20 @@ export class Pawn extends Piece {
         let index = BoardSlot.getIndex(slotOrigen);
         let direction = (this.color === eColor.black) ? 1 : -1;
         let slotsPosibles = [];
-        console.log("direction:", direction);
         let nextSlot = slots[index + (8 * direction)];
         let next2Slot = slots[index + (16 * direction)];
         let nextLeftSlot = slots[index + (7 * direction)];
         let nextRightSlot = slots[index + (9 * direction)];
-        console.log("\nnextSlot: ", nextSlot, "\nnext2Slot: ", next2Slot, "\nnextLeftSlot: ", nextLeftSlot, "\nnextRightSlot: ", nextRightSlot);
         if (nextSlot && !nextSlot.piece) {
             slotsPosibles.push(nextSlot);
             if (this.isFirstMove && next2Slot && !next2Slot.piece) {
                 slotsPosibles.push(next2Slot);
             }
         }
-        if (nextLeftSlot && nextLeftSlot.piece && nextLeftSlot.piece.color == this.colorOponent) {
+        if (Piece.hasAPieceAndCanBeEat(nextLeftSlot, this)) {
             slotsPosibles.push(nextLeftSlot);
         }
-        if (nextRightSlot && nextRightSlot.piece && nextRightSlot.piece.color == this.colorOponent) {
+        if (Piece.hasAPieceAndCanBeEat(nextRightSlot, this)) {
             slotsPosibles.push(nextRightSlot);
         }
         return slotsPosibles;

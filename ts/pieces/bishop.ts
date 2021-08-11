@@ -7,56 +7,69 @@ export class Bishop extends Piece {
         super(player, ePieceType.Bishop)
     }
 
-    public getPosibleMoves(slotOrigen: BoardSlot): Array<BoardSlot> {
-        let slots: Array<BoardSlot> = Game.instance.board.slots;
+    public getPosibleMoves(slotOrigen: BoardSlot): BoardSlot[] {
+        return Bishop.getPosibleMoves(slotOrigen, this)
+    }
+    public static getPosibleMoves(slotOrigen: BoardSlot, piece: Piece): BoardSlot[] {
+        let slots: BoardSlot[] = Game.instance.board.slots;
         let index: number = BoardSlot.getIndex(slotOrigen)
-        let slotsPosibles: Array<BoardSlot> = []
-
-        let topLeftLimit: number = slotOrigen.y * 8
-        let topRightLimit: number = slotOrigen.y * 8 + 8
-        let bottomLeftLimit: number = slotOrigen.y * 8
-        let bottomRightLimit: number = slotOrigen.y * 8 + 8
+        let slotsPosibles: BoardSlot[] = []
 
         // to bottom right
-        for (let i = index + 9; i < 64; i += 9) {
-            let slot: BoardSlot = slots[i]
-            if (!slot.piece || slot.piece.color != this.color) {
-                slotsPosibles.push(slot)
+        if (slotOrigen.x + 1 < 8) {
+            for (let i = index + 9; i < 64; i += 9) {
+                let slot: BoardSlot = slots[i]
+                if (Piece.isEmptyOrCanBeEat(slot, piece)) {
+                    slotsPosibles.push(slot)
+                }
+                if (slot.piece) break; // Don't jump over pieces
+
+                // Next slot is part of the same diagonal
+                let nextSlot: BoardSlot = slots[i + 1]
+                if (nextSlot && nextSlot.x != slot.x + 1) break;
             }
-            if (slot.piece) break;
-            let nextSlot: BoardSlot = slots[i + 1]
-            if (nextSlot.x != slot.x + 1) break;
         }
 
         // to bottom left
-        for (let i = index + 7; i < 64; i += 7) {
-            let slot: BoardSlot = slots[i]
-            if (!slot.piece || slot.piece.color != this.color) {
-                slotsPosibles.push(slot)
+        if (slotOrigen.x - 1 >= 0) {
+            for (let i = index + 7; i < 64; i += 7) {
+                let slot: BoardSlot = slots[i]
+                if (Piece.isEmptyOrCanBeEat(slot, piece)) {
+                    slotsPosibles.push(slot)
+                }
+                if (slot.piece) { break; }// Don't jump over pieces
+
+                let nextSlot: BoardSlot = slots[i - 1]
+                if (nextSlot && nextSlot.x != slot.x - 1) { break }
             }
-            if (slot.piece) { break; }
-            let nextSlot: BoardSlot = slots[i - 1]
-            if (nextSlot.x != slot.x - 1) { break }
         }
         // to top right
-        for (let i = index - 9; i >= 0; i -= 9) {
-            let slot: BoardSlot = slots[i]
-            if (!slot.piece || slot.piece.color != this.color) {
-                slotsPosibles.push(slot)
+        if (slotOrigen.x + 1 < 8) {
+            for (let i = index - 9; i >= 0; i -= 9) {
+                let slot: BoardSlot = slots[i]
+                if (Piece.isEmptyOrCanBeEat(slot, piece)) {
+                    slotsPosibles.push(slot)
+                }
+                if (slot.piece) break;// Don't jump over pieces
+
+                // Next slot is part of the same diagonal
+                let nextSlot: BoardSlot = slots[i - 1]
+                if (nextSlot && nextSlot.x != slot.x - 1) break;
             }
-            if (slot.piece) break;
-            let nextSlot: BoardSlot = slots[i - 1]
-            if (nextSlot.x != slot.x - 1) break;
         }
         // to top left
-        for (let i = index - 7; i >= 0; i -= 7) {
-            let slot: BoardSlot = slots[i]
-            if (!slot.piece || slot.piece.color != this.color) {
-                slotsPosibles.push(slot)
+        if (slotOrigen.x - 1 >= 0) {
+            for (let i = index - 7; i >= 0; i -= 7) {
+                let slot: BoardSlot = slots[i]
+                if (Piece.isEmptyOrCanBeEat(slot, piece)) {
+                    slotsPosibles.push(slot)
+                }
+                if (slot.piece) { break; }// Don't jump over pieces
+
+                // Next slot is part of the same diagonal
+                let nextSlot: BoardSlot = slots[i + 1]
+                if (nextSlot && nextSlot.x != slot.x + 1) { break }
             }
-            if (slot.piece) { break; }
-            let nextSlot: BoardSlot = slots[i + 1]
-            if (nextSlot.x != slot.x + 1) { break }
         }
 
         return slotsPosibles

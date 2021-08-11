@@ -31,9 +31,11 @@ export class Actions {
     }
     public onRelease() {
         let slot: BoardSlot | undefined = this.getSlotOnMousePosition()
-        if (slot) {
-            // TODO validate move
-            // TODO Render valid moves on board
+        let slotsPosibles: BoardSlot[] = this.getValidMoves();
+        if (
+            slot && // Dropped on a slot
+            slotsPosibles.filter(s=> s==slot).length > 0 // Slot is in the list of valid moves
+        ) { 
             this.movePiece(slot, Game.instance.board.selectedPiece)
         }
         this.resetValidMoves()
@@ -63,16 +65,18 @@ export class Actions {
             }
         })
     }
-
-    private setValidMoves(slotOrigen: BoardSlot, piece: Piece) {
-        let slotsPosibles: Array<BoardSlot> = piece.getPosibleMoves(slotOrigen)
-        slotsPosibles.forEach(slotDestiny => {
+    private getValidMoves(): BoardSlot[]{
+        return Game.instance.board.slots.filter(slot => slot.isValidMove)
+    }
+    private setValidMoves(slotOrigen: BoardSlot, piece: Piece):void {
+        let slotsPosibles: BoardSlot[] = piece.getPosibleMoves(slotOrigen)
+        slotsPosibles.map(slotDestiny => {
             slotDestiny.isValidMove = true
         })
-        console.log("slotsPosibles", slotsPosibles)
+        // console.log("slotsPosibles", slotsPosibles)
     }
-    private resetValidMoves() {
-        Game.instance.board.slots.forEach(slot => {
+    private resetValidMoves():void {
+        Game.instance.board.slots.map(slot => {
             slot.isValidMove = false
         })
     }
