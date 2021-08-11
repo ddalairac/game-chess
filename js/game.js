@@ -12,6 +12,10 @@ export class Game {
             y: 0
         };
         this.gameOver = false;
+        this.secondsTotal = 0;
+        this.secondsWhite = 0;
+        this.secondsBlack = 0;
+        this.secondsInterval = 0;
         if (Game._instance) {
             throw "Ya existe una instancia de Game";
         }
@@ -20,6 +24,16 @@ export class Game {
     }
     static get instance() {
         return this._instance;
+    }
+    setTime() {
+        Game.instance.secondsTotal++;
+        if (Game.instance.playerTurn == eColor.white) {
+            Game.instance.secondsWhite++;
+        }
+        else {
+            Game.instance.secondsBlack++;
+        }
+        Game.instance.messages.setTime(Game.instance.secondsTotal, Game.instance.secondsWhite, Game.instance.secondsBlack);
     }
     frameLoop(time) {
         if (time < Game.instance.nextTime) {
@@ -37,6 +51,10 @@ export class Game {
         Game.instance.playerTurn = eColor.white;
         Game.instance.actions = new Actions();
         Game.instance.messages = new Messages();
+        Game.instance.messages.setFeedback();
+        if (this.secondsInterval)
+            clearInterval(this.secondsInterval);
+        this.secondsInterval = setInterval(this.setTime, 1000);
         window.requestAnimationFrame(Game.instance.frameLoop);
     }
 }

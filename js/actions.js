@@ -1,4 +1,4 @@
-import { Game } from './game.js';
+import { eColor, Game } from './game.js';
 import { Render } from './render.js';
 export class Actions {
     constructor() {
@@ -14,18 +14,23 @@ export class Actions {
     onClick() {
         const { boarSize, slotSize, topMargin, leftMargin, mouse } = this.moveParams;
         let slot = this.getSlotOnMousePosition();
-        if (slot && slot.piece) {
+        if (slot && slot.piece && slot.piece.color == Game.instance.playerTurn) {
             slot.piece.isSelected = true;
             Game.instance.board.selectedPiece = slot.piece;
             this.setValidMoves(slot, slot.piece);
         }
+        Game.instance.messages.setMoveMessages(true, slot);
     }
     onRelease() {
         let slot = this.getSlotOnMousePosition();
         let slotsPosibles = this.getValidMoves();
-        if (slot &&
-            slotsPosibles.filter(s => s == slot).length > 0) {
+        let isMoveValid = slotsPosibles.filter(s => s == slot).length > 0;
+        if (slot && isMoveValid) {
             this.movePiece(slot, Game.instance.board.selectedPiece);
+            this.playerTurnToogle();
+        }
+        else {
+            Game.instance.messages.setMoveMessages(false, slot, isMoveValid);
         }
         this.resetValidMoves();
         if (Game.instance.board.selectedPiece)
@@ -40,6 +45,10 @@ export class Actions {
             slot.piece = piece;
             previousSlot.piece = null;
         }
+    }
+    playerTurnToogle() {
+        Game.instance.playerTurn = (Game.instance.playerTurn == eColor.white) ? eColor.black : eColor.white;
+        Game.instance.messages.setFeedback();
     }
     getSlotOnMousePosition() {
         const { boarSize, slotSize, topMargin, leftMargin, mouse } = this.moveParams;

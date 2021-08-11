@@ -29,6 +29,20 @@ export class Game {
     }
     public gameOver: boolean = false
 
+    private secondsTotal: number = 0
+    private secondsWhite: number = 0
+    private secondsBlack: number = 0
+    private secondsInterval: number = 0
+    private setTime() {
+        Game.instance.secondsTotal++
+        if(Game.instance.playerTurn == eColor.white) {
+            Game.instance.secondsWhite++
+        } else {
+            Game.instance.secondsBlack++
+        }
+        Game.instance.messages.setTime(Game.instance.secondsTotal, Game.instance.secondsWhite, Game.instance.secondsBlack);
+    }
+
     private frameLoop(time: number) {
         if (time < Game.instance.nextTime) {
             (window as any).requestAnimationFrame(Game.instance.frameLoop);
@@ -48,6 +62,11 @@ export class Game {
         Game.instance.playerTurn = eColor.white;
         Game.instance.actions = new Actions();
         Game.instance.messages = new Messages();
+        Game.instance.messages.setFeedback();
+
+        if (this.secondsInterval) clearInterval(this.secondsInterval);
+        this.secondsInterval = setInterval(this.setTime, 1000);
+
         (window as any).requestAnimationFrame(Game.instance.frameLoop);
     }
 }

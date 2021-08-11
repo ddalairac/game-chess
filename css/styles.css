@@ -24,34 +24,43 @@ img {
   display: none;
 }
 
-.actions,
-.messages {
+.topUI,
+.bottomUI {
   position: fixed;
   z-index: 2;
-  width: 100%;
-  min-height: 90px;
-  background: white;
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 8px;
-}
-
-.messages {
-  bottom: 0;
   flex-direction: column;
   justify-content: space-between;
+  width: 100%;
+  min-height: 110px;
+  background: white;
+  align-items: center;
+  text-align: center;
+  padding: 15px;
 }
-.messages .times {
+.topUI .times,
+.bottomUI .times {
   display: flex;
   flex-direction: row;
   text-align: center;
 }
-.messages .times .time {
+.topUI .times .time,
+.bottomUI .times .time {
   margin: 0 8px;
 }
-.messages .times .time span {
+.topUI .times .time span,
+.bottomUI .times .time span {
   font-weight: bold;
+}
+.topUI .feedback,
+.bottomUI .feedback {
+  margin: 0;
+  font-size: 20px;
+}
+
+.bottomUI {
+  bottom: 0;
+  justify-content: center;
 }
 
 /*# sourceMappingURL=styles.css.map */

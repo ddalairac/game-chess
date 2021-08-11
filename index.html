@@ -10,19 +10,20 @@
 </head>
 
 <body>
-    <div class="actions">
+    <div class="topUI">
         <button id="newGame">New Game</button>
+
+        <div class="times">
+            <p class="time">Whites: <span id="whitesTime" class="whites-time">00:00:00</span></p>
+            <!-- <p class="time">Total time: <span id="totalTime" class="total-time">00:00:00</span></p> -->
+            <p class="time">Blacks: <span id="blacksTime" class="blacks-time">00:00:00</span></p>
+        </div>
     </div>
     <div class="game">
         <canvas id="stage" width="300" height="300"></canvas>
     </div>
-    <div class="messages">
-        <p class="feedback" id="feedback"></p>
-        <div class="times">
-            <p class="time">Blacks time: <span class="blacks-time">12:54</span></p>
-            <p class="time">Total time: <span class="total-time">12:54</span></p>
-            <p class="time">Whites time: <span class="whites-time">12:54</span></p>
-        </div>
+    <div class="bottomUI">
+        <h2 class="feedback" id="feedback">ddd</h2>
     </div>
 
     <img id="King_black" src="./img/King_black.svg" alt="King_black">
