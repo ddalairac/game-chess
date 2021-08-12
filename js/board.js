@@ -10,6 +10,7 @@ export class Board {
     constructor() {
         this.slots = [];
         this.selectedPiece = null;
+        this.selectedPieceOrigin = null;
         this.slots = this.resetBoard();
     }
     resetBoard() {

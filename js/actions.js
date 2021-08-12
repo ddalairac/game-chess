@@ -12,19 +12,17 @@ export class Actions {
         return { boarSize, slotSize, topMargin, leftMargin, mouse };
     }
     onClick() {
-        const { boarSize, slotSize, topMargin, leftMargin, mouse } = this.moveParams;
         let slot = this.getSlotOnMousePosition();
         if (slot && slot.piece && slot.piece.color == Game.instance.playerTurn) {
-            slot.piece.isSelected = true;
-            Game.instance.board.selectedPiece = slot.piece;
-            this.setValidMoves(slot, slot.piece);
+            this.setPieceValidMovesAttr(slot, slot.piece);
         }
         Game.instance.messages.setMoveMessages(true, slot);
     }
     onRelease() {
         let slot = this.getSlotOnMousePosition();
-        let slotsPosibles = this.getValidMoves();
+        let slotsPosibles = this.getPieceValidMoves();
         let isMoveValid = slotsPosibles.filter(s => s == slot).length > 0;
+        this.getAllPlayersMoves();
         if (slot && isMoveValid) {
             this.movePiece(slot, Game.instance.board.selectedPiece);
             this.playerTurnToogle();
@@ -32,10 +30,7 @@ export class Actions {
         else {
             Game.instance.messages.setMoveMessages(false, slot, isMoveValid);
         }
-        this.resetValidMoves();
-        if (Game.instance.board.selectedPiece)
-            Game.instance.board.selectedPiece.isSelected = false;
-        Game.instance.board.selectedPiece = null;
+        this.cleanPieceValidMovesAttr();
     }
     movePiece(slot, piece) {
         let previousSlot = Game.instance.board.slots.find(slot => slot.piece == piece);
@@ -48,31 +43,60 @@ export class Actions {
     }
     playerTurnToogle() {
         Game.instance.playerTurn = (Game.instance.playerTurn == eColor.white) ? eColor.black : eColor.white;
-        Game.instance.messages.setFeedback();
+        Game.instance.messages.displayPlayerTurn();
     }
     getSlotOnMousePosition() {
-        const { boarSize, slotSize, topMargin, leftMargin, mouse } = this.moveParams;
+        const { slotSize, topMargin, leftMargin, mouse } = this.moveParams;
         return Game.instance.board.slots.find(slot => {
             let yPx = (slot.y * slotSize) + topMargin;
             let xPx = (slot.x * slotSize) + leftMargin;
-            if (mouse.x >= xPx && mouse.x <= xPx + slotSize && mouse.y >= yPx && mouse.y <= yPx + slotSize) {
-                return true;
-            }
+            return (mouse.x >= xPx && mouse.x <= xPx + slotSize && mouse.y >= yPx && mouse.y <= yPx + slotSize);
         });
     }
-    getValidMoves() {
+    getPieceValidMoves() {
         return Game.instance.board.slots.filter(slot => slot.isValidMove);
     }
-    setValidMoves(slotOrigen, piece) {
+    setPieceValidMovesAttr(slotOrigen, piece) {
+        slotOrigen.piece.isSelected = true;
+        Game.instance.board.selectedPiece = slotOrigen.piece;
+        Game.instance.board.selectedPieceOrigin = slotOrigen;
         let slotsPosibles = piece.getPosibleMoves(slotOrigen);
         slotsPosibles.map(slotDestiny => {
             slotDestiny.isValidMove = true;
         });
     }
-    resetValidMoves() {
+    cleanPieceValidMovesAttr() {
         Game.instance.board.slots.map(slot => {
             slot.isValidMove = false;
         });
+        if (Game.instance.board.selectedPiece)
+            Game.instance.board.selectedPiece.isSelected = false;
+        Game.instance.board.selectedPiece = null;
+        Game.instance.board.selectedPieceOrigin = null;
+    }
+    isChek() {
+        let { possibleWhitesMoves, possibleBlackMoves } = this.getAllPlayersMoves();
+        let isChek = false;
+        return isChek;
+    }
+    getAllPlayersMoves() {
+        let possibleWhitesMoves = [];
+        let possibleBlackMoves = [];
+        Game.instance.board.slots.forEach(slot => {
+            if (slot.piece) {
+                if (slot.piece.color == eColor.white) {
+                    possibleWhitesMoves = [...possibleWhitesMoves, ...slot.piece.getPosibleMoves(slot)];
+                }
+                else {
+                    possibleBlackMoves = [...possibleBlackMoves, ...slot.piece.getPosibleMoves(slot)];
+                }
+            }
+        });
+        let playerSet = new Set(possibleWhitesMoves);
+        let opponentSet = new Set(possibleBlackMoves);
+        possibleWhitesMoves = [...playerSet];
+        possibleBlackMoves = [...opponentSet];
+        return { possibleWhitesMoves, possibleBlackMoves };
     }
 }
 //# sourceMappingURL=actions.js.map

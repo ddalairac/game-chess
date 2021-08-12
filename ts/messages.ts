@@ -19,16 +19,16 @@ export class Messages {
         this.feedbackElement.innerHTML = message
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
-            this.feedbackElement.innerHTML = ""
+            this.displayPlayerTurn()
         }, 5000)
     }
-    public setFeedback(message: string = this.displayPlayerTurn()) {
+    public setFeedback(message: string) {
         // console.log(message)
         this.feedbackElement.innerHTML = message
     }
 
     public displayPlayerTurn() {
-        return this.capitalize(Game.instance.playerTurn + "'s turn to move")
+        this.setFeedback( this.capitalize(Game.instance.playerTurn + "'s turn to move"))
     }
 
     private capitalize(str: string) {
@@ -36,12 +36,7 @@ export class Messages {
     }
 
     public setMoveMessages(isClick: boolean, slot: BoardSlot | undefined, isMoveValid: boolean | undefined = undefined): void {
-        // console.log(
-        //     "\n isClick: ", isClick,
-        //     "\n slot: ", slot,
-        //     "\n isMoveValid: ", isMoveValid,
-        //     "\n Game.instance.board.selectedPiece: ", Game.instance.board.selectedPiece,
-        // )
+
         if (isClick) {
             // Click
             if (!slot) {

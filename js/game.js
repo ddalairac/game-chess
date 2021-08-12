@@ -26,14 +26,26 @@ export class Game {
         return this._instance;
     }
     setTime() {
-        Game.instance.secondsTotal++;
-        if (Game.instance.playerTurn == eColor.white) {
-            Game.instance.secondsWhite++;
+        let inst = Game.instance;
+        inst.secondsTotal++;
+        if (inst.playerTurn == eColor.white) {
+            inst.secondsWhite++;
         }
         else {
-            Game.instance.secondsBlack++;
+            inst.secondsBlack++;
         }
-        Game.instance.messages.setTime(Game.instance.secondsTotal, Game.instance.secondsWhite, Game.instance.secondsBlack);
+        inst.messages.setTime(inst.secondsTotal, inst.secondsWhite, inst.secondsBlack);
+    }
+    reSetTime() {
+        console.log("resetTime");
+        let inst = Game.instance;
+        if (inst.secondsInterval)
+            clearInterval(inst.secondsInterval);
+        inst.secondsTotal = 0;
+        inst.secondsWhite = 0;
+        inst.secondsBlack = 0;
+        inst.messages.setTime(inst.secondsTotal, inst.secondsWhite, inst.secondsBlack);
+        inst.secondsInterval = setInterval(this.setTime, 1000);
     }
     frameLoop(time) {
         if (time < Game.instance.nextTime) {
@@ -51,10 +63,8 @@ export class Game {
         Game.instance.playerTurn = eColor.white;
         Game.instance.actions = new Actions();
         Game.instance.messages = new Messages();
-        Game.instance.messages.setFeedback();
-        if (this.secondsInterval)
-            clearInterval(this.secondsInterval);
-        this.secondsInterval = setInterval(this.setTime, 1000);
+        Game.instance.messages.setFeedbackTimeOut("A new game begins");
+        Game.instance.reSetTime();
         window.requestAnimationFrame(Game.instance.frameLoop);
     }
 }

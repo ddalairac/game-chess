@@ -9,14 +9,14 @@ export class Messages {
         this.feedbackElement.innerHTML = message;
         clearTimeout(this.timer);
         this.timer = setTimeout(() => {
-            this.feedbackElement.innerHTML = "";
+            this.displayPlayerTurn();
         }, 5000);
     }
-    setFeedback(message = this.displayPlayerTurn()) {
+    setFeedback(message) {
         this.feedbackElement.innerHTML = message;
     }
     displayPlayerTurn() {
-        return this.capitalize(Game.instance.playerTurn + "'s turn to move");
+        this.setFeedback(this.capitalize(Game.instance.playerTurn + "'s turn to move"));
     }
     capitalize(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);

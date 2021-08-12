@@ -15,6 +15,7 @@ export class Board {
 
     public slots: BoardSlot[] = []
     public selectedPiece: Piece | null = null
+    public selectedPieceOrigin: BoardSlot | null = null
 
     public resetBoard() {
         const slots: BoardSlot[] = []

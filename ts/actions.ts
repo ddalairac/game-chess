@@ -17,33 +17,27 @@ export class Actions {
 
         return { boarSize, slotSize, topMargin, leftMargin, mouse }
     }
-
     public onClick() {
-        const { boarSize, slotSize, topMargin, leftMargin, mouse } = this.moveParams
-        // Game.instance.messages.setFeedback("some text")
-
         let slot: BoardSlot | undefined = this.getSlotOnMousePosition()
+
         if (slot && slot.piece && slot.piece.color == Game.instance.playerTurn) {
-            slot.piece.isSelected = true
-            Game.instance.board.selectedPiece = slot.piece
-            this.setValidMoves(slot, slot.piece)
-        
+            this.setPieceValidMovesAttr(slot, slot.piece)
         }
-        Game.instance.messages.setMoveMessages(true,slot);
+        Game.instance.messages.setMoveMessages(true, slot);
     }
     public onRelease() {
         let slot: BoardSlot | undefined = this.getSlotOnMousePosition()
-        let slotsPosibles: BoardSlot[] = this.getValidMoves();
-        let isMoveValid:boolean = slotsPosibles.filter(s => s == slot).length > 0 // Slot is in the list of valid moves
+        let slotsPosibles: BoardSlot[] = this.getPieceValidMoves();
+        let isMoveValid: boolean = slotsPosibles.filter(s => s == slot).length > 0 // Slot is in the list of valid moves
+        this.getAllPlayersMoves()
+
         if (slot && isMoveValid) {
             this.movePiece(slot, Game.instance.board.selectedPiece)
             this.playerTurnToogle()
         } else {
-            Game.instance.messages.setMoveMessages(false,slot,isMoveValid);
+            Game.instance.messages.setMoveMessages(false, slot, isMoveValid);
         }
-        this.resetValidMoves()
-        if (Game.instance.board.selectedPiece) Game.instance.board.selectedPiece.isSelected = false
-        Game.instance.board.selectedPiece = null
+        this.cleanPieceValidMovesAttr()
     }
 
     private movePiece(slot: BoardSlot, piece: Piece) {
@@ -56,35 +50,67 @@ export class Actions {
     }
     playerTurnToogle(): void {
         Game.instance.playerTurn = (Game.instance.playerTurn == eColor.white) ? eColor.black : eColor.white;
-        Game.instance.messages.setFeedback();
+        Game.instance.messages.displayPlayerTurn();
     }
 
     private getSlotOnMousePosition(): BoardSlot | undefined {
-        const { boarSize, slotSize, topMargin, leftMargin, mouse } = this.moveParams
-
+        const { slotSize, topMargin, leftMargin, mouse } = this.moveParams
         return Game.instance.board.slots.find(slot => {
             let yPx = (slot.y * slotSize) + topMargin;
             let xPx = (slot.x * slotSize) + leftMargin;
-
-            if (mouse.x >= xPx && mouse.x <= xPx + slotSize && mouse.y >= yPx && mouse.y <= yPx + slotSize) {
-
-                return true
-            }
+            return (mouse.x >= xPx && mouse.x <= xPx + slotSize && mouse.y >= yPx && mouse.y <= yPx + slotSize) 
         })
     }
-    private getValidMoves(): BoardSlot[] {
+
+    private getPieceValidMoves(): BoardSlot[] {
         return Game.instance.board.slots.filter(slot => slot.isValidMove)
     }
-    private setValidMoves(slotOrigen: BoardSlot, piece: Piece): void {
+
+    private setPieceValidMovesAttr(slotOrigen: BoardSlot, piece: Piece): void {
+        slotOrigen.piece.isSelected = true
+        Game.instance.board.selectedPiece = slotOrigen.piece
+        Game.instance.board.selectedPieceOrigin = slotOrigen
         let slotsPosibles: BoardSlot[] = piece.getPosibleMoves(slotOrigen)
         slotsPosibles.map(slotDestiny => {
             slotDestiny.isValidMove = true
         })
-        // console.log("slotsPosibles", slotsPosibles)
     }
-    private resetValidMoves(): void {
+    private cleanPieceValidMovesAttr(): void {
         Game.instance.board.slots.map(slot => {
             slot.isValidMove = false
         })
+        if (Game.instance.board.selectedPiece) Game.instance.board.selectedPiece.isSelected = false
+        Game.instance.board.selectedPiece = null
+        Game.instance.board.selectedPieceOrigin = null
+    }
+
+    private isChek(): boolean {
+        let { possibleWhitesMoves, possibleBlackMoves } = this.getAllPlayersMoves();
+
+
+
+        let isChek: boolean = false
+        return isChek;
+    }
+
+    private getAllPlayersMoves(): { possibleWhitesMoves: BoardSlot[], possibleBlackMoves: BoardSlot[] } {
+        let possibleWhitesMoves: BoardSlot[] = []
+        let possibleBlackMoves: BoardSlot[] = []
+        Game.instance.board.slots.forEach(slot => {
+            if (slot.piece) {
+                if (slot.piece.color == eColor.white) {
+                    possibleWhitesMoves = [...possibleWhitesMoves, ...slot.piece.getPosibleMoves(slot)]
+                } else {
+                    possibleBlackMoves = [...possibleBlackMoves, ...slot.piece.getPosibleMoves(slot)]
+                }
+            }
+        })
+        let playerSet = new Set(possibleWhitesMoves)
+        let opponentSet = new Set(possibleBlackMoves)
+
+        possibleWhitesMoves = [...playerSet]
+        possibleBlackMoves = [...opponentSet]
+
+        return { possibleWhitesMoves, possibleBlackMoves }
     }
 }
