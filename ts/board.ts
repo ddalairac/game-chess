@@ -15,7 +15,7 @@ export class Board {
 
     public slots: BoardSlot[] = []
     public selectedPiece: Piece | null = null
-    public selectedPieceOrigin: BoardSlot | null = null
+    public checkSlot: BoardSlot | undefined = undefined
 
     public resetBoard() {
         const slots: BoardSlot[] = []

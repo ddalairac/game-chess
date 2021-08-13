@@ -1,4 +1,5 @@
 import { Actions } from './actions.js';
+import { BoardSlot } from './board-slot.js';
 import { Board } from './board.js';
 import { Messages } from './messages.js';
 import { Render } from './render.js';
@@ -27,7 +28,7 @@ export class Game {
         x: 0,
         y: 0
     }
-    public gameOver: boolean = false
+    public isCheckMate: boolean = false
 
     private secondsTotal: number = 0
     private secondsWhite: number = 0
@@ -37,15 +38,14 @@ export class Game {
     private setTime() {
         let inst = Game.instance
         inst.secondsTotal++
-        if(inst.playerTurn == eColor.white) {
+        if (inst.playerTurn == eColor.white) {
             inst.secondsWhite++
         } else {
             inst.secondsBlack++
         }
         inst.messages.setTime(inst.secondsTotal, inst.secondsWhite, inst.secondsBlack);
     }
-    private reSetTime(){
-        console.log("resetTime")
+    private reSetTime() {
         let inst = Game.instance
         if (inst.secondsInterval) clearInterval(inst.secondsInterval);
 
@@ -64,13 +64,14 @@ export class Game {
         Game.instance.nextTime = time + Game.instance.delay;
         Render.instance.draw()
 
-        if (Game.instance.gameOver == false) {
+        if (Game.instance.isCheckMate == false) {
             requestAnimationFrame(Game.instance.frameLoop);
         }
     }
 
     public starGame() {
         // console.log("Game Start");
+        Game.instance.isCheckMate = false
         Game.instance.board = new Board();
         Game.instance.playerTurn = eColor.white;
         Game.instance.actions = new Actions();

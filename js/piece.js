@@ -1,4 +1,4 @@
-import { eColor } from './game.js';
+import { eColor, Game } from './game.js';
 export class Piece {
     constructor(color, type) {
         this._color = color;
@@ -23,6 +23,17 @@ export class Piece {
     }
     static hasAPieceAndCanBeEat(slotDestiny, piece) {
         return (slotDestiny && slotDestiny.piece && slotDestiny.piece.color == piece.colorOponent);
+    }
+    static getAllPlayerMoves(color) {
+        let possibleMoves = [];
+        Game.instance.board.slots.forEach(slot => {
+            if (slot.piece) {
+                if (slot.piece.color == color) {
+                    possibleMoves = [...possibleMoves, ...slot.piece.getPosibleMoves(slot)];
+                }
+            }
+        });
+        return possibleMoves;
     }
 }
 export var ePieceType;

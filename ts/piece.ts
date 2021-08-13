@@ -38,6 +38,21 @@ export abstract class Piece {
         return (slotDestiny && slotDestiny.piece && slotDestiny.piece.color == piece.colorOponent)
     }
 
+    public static getAllPlayerMoves(color:eColor):  BoardSlot[] {
+        let possibleMoves: BoardSlot[] = []
+        Game.instance.board.slots.forEach(slot => {
+            if (slot.piece) {
+                if (slot.piece.color == color) {
+                    possibleMoves = [...possibleMoves, ...slot.piece.getPosibleMoves(slot)]
+                } 
+            }
+        })
+        // let possibleMovesSet = new Set(possibleMoves)
+        // possibleMoves = [...possibleMovesSet]
+
+        return possibleMoves
+    }
+
 }
 
 export enum ePieceType {

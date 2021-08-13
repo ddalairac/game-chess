@@ -11,7 +11,7 @@ export class Game {
             x: 0,
             y: 0
         };
-        this.gameOver = false;
+        this.isCheckMate = false;
         this.secondsTotal = 0;
         this.secondsWhite = 0;
         this.secondsBlack = 0;
@@ -37,7 +37,6 @@ export class Game {
         inst.messages.setTime(inst.secondsTotal, inst.secondsWhite, inst.secondsBlack);
     }
     reSetTime() {
-        console.log("resetTime");
         let inst = Game.instance;
         if (inst.secondsInterval)
             clearInterval(inst.secondsInterval);
@@ -54,11 +53,12 @@ export class Game {
         }
         Game.instance.nextTime = time + Game.instance.delay;
         Render.instance.draw();
-        if (Game.instance.gameOver == false) {
+        if (Game.instance.isCheckMate == false) {
             requestAnimationFrame(Game.instance.frameLoop);
         }
     }
     starGame() {
+        Game.instance.isCheckMate = false;
         Game.instance.board = new Board();
         Game.instance.playerTurn = eColor.white;
         Game.instance.actions = new Actions();

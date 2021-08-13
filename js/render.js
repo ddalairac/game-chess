@@ -56,11 +56,14 @@ export class Render {
         this.leftMargin = (xSpace > 0) ? xSpace / 2 : 0;
         this.slotSize = boarSize / 8;
     }
-    drawScuare(x, y, color, size, isValidMove) {
+    drawScuare(x, y, color, size, isValidMove, isCheck) {
         this.ctx.beginPath();
         this.ctx.rect(x, y, size, size);
         if (isValidMove) {
             this.ctx.fillStyle = (color == eColor.white) ? "#d9ff8e" : "#a8d452";
+        }
+        else if (isCheck) {
+            this.ctx.fillStyle = "yellow";
         }
         else {
             this.ctx.fillStyle = (color == eColor.white) ? "#FFF" : "#999";
@@ -72,7 +75,8 @@ export class Render {
             Game.instance.board.slots.forEach(slot => {
                 let yPx = (slot.y * this.slotSize) + this.topMargin;
                 let xPx = (slot.x * this.slotSize) + this.leftMargin;
-                this.drawScuare(xPx, yPx, slot.color, this.slotSize, slot.isValidMove);
+                let isCheck = (Game.instance.board.checkSlot == slot);
+                this.drawScuare(xPx, yPx, slot.color, this.slotSize, slot.isValidMove, isCheck);
                 if (slot.piece) {
                     if (!slot.piece.isSelected) {
                         this.ctx.drawImage(this.imgs[slot.piece.img], xPx, yPx, this.slotSize, this.slotSize);

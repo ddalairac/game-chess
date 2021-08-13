@@ -1,6 +1,6 @@
 import { BoardSlot } from './board-slot.js';
 import { eColor, Game } from './game.js';
-import { Piece } from './piece.js';
+import { ePieceType, Piece } from './piece.js';
 import { Render } from './render.js';
 
 export class Actions {
@@ -20,7 +20,9 @@ export class Actions {
     public onClick() {
         let slot: BoardSlot | undefined = this.getSlotOnMousePosition()
 
-        if (slot && slot.piece && slot.piece.color == Game.instance.playerTurn) {
+        if (slot && slot.piece
+            && slot.piece.color == Game.instance.playerTurn
+        ) {
             this.setPieceValidMovesAttr(slot, slot.piece)
         }
         Game.instance.messages.setMoveMessages(true, slot);
@@ -29,11 +31,14 @@ export class Actions {
         let slot: BoardSlot | undefined = this.getSlotOnMousePosition()
         let slotsPosibles: BoardSlot[] = this.getPieceValidMoves();
         let isMoveValid: boolean = slotsPosibles.filter(s => s == slot).length > 0 // Slot is in the list of valid moves
-        this.getAllPlayersMoves()
 
         if (slot && isMoveValid) {
+            if (!this.isSelfChek(slot)) {
             this.movePiece(slot, Game.instance.board.selectedPiece)
+            Game.instance.board.checkSlot = this.playChekSlot()
+            // TODO si esta en jaque, chequear que la proxima jugada no es en jaque
             this.playerTurnToogle()
+            }
         } else {
             Game.instance.messages.setMoveMessages(false, slot, isMoveValid);
         }
@@ -48,7 +53,8 @@ export class Actions {
             previousSlot.piece = null
         }
     }
-    playerTurnToogle(): void {
+
+    private playerTurnToogle(): void {
         Game.instance.playerTurn = (Game.instance.playerTurn == eColor.white) ? eColor.black : eColor.white;
         Game.instance.messages.displayPlayerTurn();
     }
@@ -58,7 +64,7 @@ export class Actions {
         return Game.instance.board.slots.find(slot => {
             let yPx = (slot.y * slotSize) + topMargin;
             let xPx = (slot.x * slotSize) + leftMargin;
-            return (mouse.x >= xPx && mouse.x <= xPx + slotSize && mouse.y >= yPx && mouse.y <= yPx + slotSize) 
+            return (mouse.x >= xPx && mouse.x <= xPx + slotSize && mouse.y >= yPx && mouse.y <= yPx + slotSize)
         })
     }
 
@@ -69,48 +75,55 @@ export class Actions {
     private setPieceValidMovesAttr(slotOrigen: BoardSlot, piece: Piece): void {
         slotOrigen.piece.isSelected = true
         Game.instance.board.selectedPiece = slotOrigen.piece
-        Game.instance.board.selectedPieceOrigin = slotOrigen
         let slotsPosibles: BoardSlot[] = piece.getPosibleMoves(slotOrigen)
         slotsPosibles.map(slotDestiny => {
-            slotDestiny.isValidMove = true
+            if (!this.isSelfChek(slotDestiny)) {
+                slotDestiny.isValidMove = true
+            }
         })
     }
+
     private cleanPieceValidMovesAttr(): void {
         Game.instance.board.slots.map(slot => {
             slot.isValidMove = false
         })
         if (Game.instance.board.selectedPiece) Game.instance.board.selectedPiece.isSelected = false
         Game.instance.board.selectedPiece = null
-        Game.instance.board.selectedPieceOrigin = null
     }
 
-    private isChek(): boolean {
-        let { possibleWhitesMoves, possibleBlackMoves } = this.getAllPlayersMoves();
+    private isSelfChek(slotDestiny: BoardSlot): boolean {
+        let isSelfChek: boolean = false
+        let selectedPiece = Game.instance.board.selectedPiece
+        slotDestiny
+        if (selectedPiece && selectedPiece.type == ePieceType.King) {
+            if (selectedPiece.color == eColor.white) {
+                let opponentMoves = Piece.getAllPlayerMoves(eColor.black);
+                if (opponentMoves.find(slot => slot == slotDestiny)) {
+                    isSelfChek = true
+                }
+            } else {
+                let opponentMoves = Piece.getAllPlayerMoves(eColor.white);
+                if (opponentMoves.find(slot => slot == slotDestiny)) {
+                    isSelfChek = true
 
-
-
-        let isChek: boolean = false
-        return isChek;
-    }
-
-    private getAllPlayersMoves(): { possibleWhitesMoves: BoardSlot[], possibleBlackMoves: BoardSlot[] } {
-        let possibleWhitesMoves: BoardSlot[] = []
-        let possibleBlackMoves: BoardSlot[] = []
-        Game.instance.board.slots.forEach(slot => {
-            if (slot.piece) {
-                if (slot.piece.color == eColor.white) {
-                    possibleWhitesMoves = [...possibleWhitesMoves, ...slot.piece.getPosibleMoves(slot)]
-                } else {
-                    possibleBlackMoves = [...possibleBlackMoves, ...slot.piece.getPosibleMoves(slot)]
                 }
             }
-        })
-        let playerSet = new Set(possibleWhitesMoves)
-        let opponentSet = new Set(possibleBlackMoves)
-
-        possibleWhitesMoves = [...playerSet]
-        possibleBlackMoves = [...opponentSet]
-
-        return { possibleWhitesMoves, possibleBlackMoves }
+        }
+        // console.log("isSelfChek",isSelfChek)
+        return isSelfChek;
     }
+    private playChekSlot(): BoardSlot | undefined {
+        let playerPossibleMoves = Piece.getAllPlayerMoves(Game.instance.playerTurn);
+        let opponentColor = (Game.instance.playerTurn == eColor.white) ? eColor.black : eColor.white
+        let OpponentKingSlot = Game.instance.board.slots.find(slot => (slot.piece && slot.piece.type == ePieceType.King && slot.piece.color == opponentColor))
+        let isCheck = !!playerPossibleMoves.find(slot => slot == OpponentKingSlot)
+        // console.log("isPlayChek", isCheck)
+
+        if (isCheck) {
+            Game.instance.messages.setFeedbackTimeOut("Check. The king is in trouble, save the king!")
+            return OpponentKingSlot;
+        } 
+        return undefined
+    }
+
 }

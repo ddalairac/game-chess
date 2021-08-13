@@ -35,4 +35,5 @@ export class King extends Piece {
         
         return slotsPosibles
     }
+    
 }
