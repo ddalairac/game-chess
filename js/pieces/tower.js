@@ -11,7 +11,7 @@ export class Tower extends Piece {
         return [...slotsPosibles, ...Tower.getPosibleMoves(slotOrigen, this)];
     }
     static getPosibleMoves(slotOrigen, piece) {
-        let slots = Game.instance.board.slots;
+        let slots = Game.instance.board.slotsWithoutSelected;
         let index = BoardSlot.getIndex(slotOrigen);
         let slotsPosibles = [];
         let leftLimit = slotOrigen.y * 8;

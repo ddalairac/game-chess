@@ -8,7 +8,7 @@ export class Pawn extends Piece {
     }
 
     public getPosibleMoves(slotOrigen: BoardSlot): BoardSlot[] {
-        let slots: BoardSlot[] = Game.instance.board.slots;
+        let slots: BoardSlot[] = Game.instance.board.slotsWithoutSelected;
         let index: number = BoardSlot.getIndex(slotOrigen)
         let direction: number = (this.color === eColor.black) ? 1 : -1;
         let slotsPosibles: BoardSlot[] = []

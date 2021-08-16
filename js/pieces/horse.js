@@ -5,7 +5,7 @@ export class Horse extends Piece {
         super(player, ePieceType.Horse);
     }
     getPosibleMoves(slotOrigen) {
-        let slots = Game.instance.board.slots;
+        let slots = Game.instance.board.slotsWithoutSelected;
         let slotsPosibles = [];
         slotsPosibles = slots.filter(slot => {
             if ((slot.x == slotOrigen.x - 1 && slot.y == slotOrigen.y - 2) ||

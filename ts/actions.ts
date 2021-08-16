@@ -34,10 +34,9 @@ export class Actions {
 
         if (slot && isMoveValid) {
             if (!this.isSelfChek(slot)) {
-            this.movePiece(slot, Game.instance.board.selectedPiece)
-            Game.instance.board.checkSlot = this.playChekSlot()
-            // TODO si esta en jaque, chequear que la proxima jugada no es en jaque
-            this.playerTurnToogle()
+                this.movePiece(slot, Game.instance.board.selectedPiece)
+                Game.instance.board.checkSlot = this.playChekSlot()
+                this.playerTurnToogle()
             }
         } else {
             Game.instance.messages.setMoveMessages(false, slot, isMoveValid);
@@ -77,9 +76,9 @@ export class Actions {
         Game.instance.board.selectedPiece = slotOrigen.piece
         let slotsPosibles: BoardSlot[] = piece.getPosibleMoves(slotOrigen)
         slotsPosibles.map(slotDestiny => {
-            if (!this.isSelfChek(slotDestiny)) {
-                slotDestiny.isValidMove = true
-            }
+            // if (!this.isSelfChek()) {
+            slotDestiny.isValidMove = true
+            // }
         })
     }
 
@@ -91,38 +90,45 @@ export class Actions {
         Game.instance.board.selectedPiece = null
     }
 
-    private isSelfChek(slotDestiny: BoardSlot): boolean {
-        let isSelfChek: boolean = false
+    private isSelfChek(destinySlot: BoardSlot | undefined): boolean {
+        let selfChek: boolean = false
         let selectedPiece = Game.instance.board.selectedPiece
-        slotDestiny
-        if (selectedPiece && selectedPiece.type == ePieceType.King) {
-            if (selectedPiece.color == eColor.white) {
-                let opponentMoves = Piece.getAllPlayerMoves(eColor.black);
-                if (opponentMoves.find(slot => slot == slotDestiny)) {
-                    isSelfChek = true
-                }
-            } else {
-                let opponentMoves = Piece.getAllPlayerMoves(eColor.white);
-                if (opponentMoves.find(slot => slot == slotDestiny)) {
-                    isSelfChek = true
+        let checkSlot = Game.instance.board.checkSlot
+        if (selectedPiece) {
+            let playerColor = selectedPiece.color
+            let playerKinkSlot = Game.instance.board.slots.find(slot => (slot.piece && slot.piece.type == ePieceType.King && slot.piece.color == playerColor))
+            let opponentColor = (playerColor == eColor.white) ? eColor.black : eColor.white
+            let opponentMoves: BoardSlot[] = Piece.getAllPlayerMoves(opponentColor);
 
+            opponentMoves = opponentMoves.filter(slot => slot != destinySlot)
+
+            // If the move leaves me in check
+            if (opponentMoves.find(slot => slot == playerKinkSlot)) {
+                selfChek = true
+                Game.instance.messages.setFeedbackTimeOut("The move leaves me in check")
+            }
+            // If I'm already in check, my next move should get me out
+            if (checkSlot && checkSlot.piece.color == playerColor) {
+                if (opponentMoves.find(slot => slot == checkSlot)) {
+                    selfChek = true
+                    Game.instance.messages.setFeedbackTimeOut("I'm already in check, my next move should get me out")
                 }
             }
         }
-        // console.log("isSelfChek",isSelfChek)
-        return isSelfChek;
+        return selfChek;
     }
+
     private playChekSlot(): BoardSlot | undefined {
         let playerPossibleMoves = Piece.getAllPlayerMoves(Game.instance.playerTurn);
         let opponentColor = (Game.instance.playerTurn == eColor.white) ? eColor.black : eColor.white
-        let OpponentKingSlot = Game.instance.board.slots.find(slot => (slot.piece && slot.piece.type == ePieceType.King && slot.piece.color == opponentColor))
-        let isCheck = !!playerPossibleMoves.find(slot => slot == OpponentKingSlot)
-        // console.log("isPlayChek", isCheck)
+        let opponentKingSlot = Game.instance.board.slots.find(slot => (slot.piece && slot.piece.type == ePieceType.King && slot.piece.color == opponentColor))
+        let isPlayChek = !!playerPossibleMoves.find(slot => slot == opponentKingSlot)
+        console.log("isPlayChek", isPlayChek)
 
-        if (isCheck) {
+        if (isPlayChek) {
             Game.instance.messages.setFeedbackTimeOut("Check. The king is in trouble, save the king!")
-            return OpponentKingSlot;
-        } 
+            return opponentKingSlot;
+        }
         return undefined
     }
 

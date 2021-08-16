@@ -8,7 +8,7 @@ export class King extends Piece {
     }
 
     public getPosibleMoves(slotOrigen: BoardSlot): BoardSlot[] {
-        let slots: BoardSlot[] = Game.instance.board.slots;
+        let slots: BoardSlot[] = Game.instance.board.slotsWithoutSelected;
         let slotsPosibles: BoardSlot[] = []
 
         slotsPosibles = slots.filter(slot => {

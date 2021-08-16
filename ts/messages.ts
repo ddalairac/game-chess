@@ -23,12 +23,13 @@ export class Messages {
         }, 5000)
     }
     public setFeedback(message: string) {
-        // console.log(message)
+        console.log(message)
         this.feedbackElement.innerHTML = message
     }
 
     public displayPlayerTurn() {
-        this.setFeedback( this.capitalize(Game.instance.playerTurn + "'s turn to move"))
+        if (!this.timer)
+            this.setFeedback(this.capitalize(Game.instance.playerTurn + "'s turn to move"))
     }
 
     private capitalize(str: string) {
@@ -36,7 +37,6 @@ export class Messages {
     }
 
     public setMoveMessages(isClick: boolean, slot: BoardSlot | undefined, isMoveValid: boolean | undefined = undefined): void {
-
         if (isClick) {
             // Click
             if (!slot) {

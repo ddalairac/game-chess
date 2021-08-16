@@ -13,10 +13,12 @@ export class Messages {
         }, 5000);
     }
     setFeedback(message) {
+        console.log(message);
         this.feedbackElement.innerHTML = message;
     }
     displayPlayerTurn() {
-        this.setFeedback(this.capitalize(Game.instance.playerTurn + "'s turn to move"));
+        if (!this.timer)
+            this.setFeedback(this.capitalize(Game.instance.playerTurn + "'s turn to move"));
     }
     capitalize(str) {
         return str.charAt(0).toUpperCase() + str.slice(1);

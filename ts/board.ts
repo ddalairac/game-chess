@@ -57,4 +57,16 @@ export class Board {
         return slots;
     }
 
+    public get slotsWithoutSelected(): BoardSlot[] {
+        let slotsWithoutSelected = [...this.slots]
+        for (let index = 0; index < slotsWithoutSelected.length; index++) {
+            const slot = slotsWithoutSelected[index];
+            if (slot.piece && slot.piece.isSelected) {
+                let {y,x,color} = slot
+                slotsWithoutSelected[index] = new BoardSlot(y,x,color,null)
+            }
+        }
+        return slotsWithoutSelected
+    }
+
 }

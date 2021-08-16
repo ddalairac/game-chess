@@ -9,7 +9,7 @@ export class Bishop extends Piece {
         return Bishop.getPosibleMoves(slotOrigen, this);
     }
     static getPosibleMoves(slotOrigen, piece) {
-        let slots = Game.instance.board.slots;
+        let slots = Game.instance.board.slotsWithoutSelected;
         let index = BoardSlot.getIndex(slotOrigen);
         let slotsPosibles = [];
         if (slotOrigen.x + 1 < 8) {

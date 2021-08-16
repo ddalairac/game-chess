@@ -65,9 +65,7 @@ export class Actions {
         Game.instance.board.selectedPiece = slotOrigen.piece;
         let slotsPosibles = piece.getPosibleMoves(slotOrigen);
         slotsPosibles.map(slotDestiny => {
-            if (!this.isSelfChek(slotDestiny)) {
-                slotDestiny.isValidMove = true;
-            }
+            slotDestiny.isValidMove = true;
         });
     }
     cleanPieceValidMovesAttr() {
@@ -78,34 +76,38 @@ export class Actions {
             Game.instance.board.selectedPiece.isSelected = false;
         Game.instance.board.selectedPiece = null;
     }
-    isSelfChek(slotDestiny) {
-        let isSelfChek = false;
+    isSelfChek(destinySlot) {
+        let selfChek = false;
         let selectedPiece = Game.instance.board.selectedPiece;
-        slotDestiny;
-        if (selectedPiece && selectedPiece.type == ePieceType.King) {
-            if (selectedPiece.color == eColor.white) {
-                let opponentMoves = Piece.getAllPlayerMoves(eColor.black);
-                if (opponentMoves.find(slot => slot == slotDestiny)) {
-                    isSelfChek = true;
-                }
+        let checkSlot = Game.instance.board.checkSlot;
+        if (selectedPiece) {
+            let playerColor = selectedPiece.color;
+            let playerKinkSlot = Game.instance.board.slots.find(slot => (slot.piece && slot.piece.type == ePieceType.King && slot.piece.color == playerColor));
+            let opponentColor = (playerColor == eColor.white) ? eColor.black : eColor.white;
+            let opponentMoves = Piece.getAllPlayerMoves(opponentColor);
+            opponentMoves = opponentMoves.filter(slot => slot != destinySlot);
+            if (opponentMoves.find(slot => slot == playerKinkSlot)) {
+                selfChek = true;
+                Game.instance.messages.setFeedbackTimeOut("The move leaves me in check");
             }
-            else {
-                let opponentMoves = Piece.getAllPlayerMoves(eColor.white);
-                if (opponentMoves.find(slot => slot == slotDestiny)) {
-                    isSelfChek = true;
+            if (checkSlot && checkSlot.piece.color == playerColor) {
+                if (opponentMoves.find(slot => slot == checkSlot)) {
+                    selfChek = true;
+                    Game.instance.messages.setFeedbackTimeOut("I'm already in check, my next move should get me out");
                 }
             }
         }
-        return isSelfChek;
+        return selfChek;
     }
     playChekSlot() {
         let playerPossibleMoves = Piece.getAllPlayerMoves(Game.instance.playerTurn);
         let opponentColor = (Game.instance.playerTurn == eColor.white) ? eColor.black : eColor.white;
-        let OpponentKingSlot = Game.instance.board.slots.find(slot => (slot.piece && slot.piece.type == ePieceType.King && slot.piece.color == opponentColor));
-        let isCheck = !!playerPossibleMoves.find(slot => slot == OpponentKingSlot);
-        if (isCheck) {
+        let opponentKingSlot = Game.instance.board.slots.find(slot => (slot.piece && slot.piece.type == ePieceType.King && slot.piece.color == opponentColor));
+        let isPlayChek = !!playerPossibleMoves.find(slot => slot == opponentKingSlot);
+        console.log("isPlayChek", isPlayChek);
+        if (isPlayChek) {
             Game.instance.messages.setFeedbackTimeOut("Check. The king is in trouble, save the king!");
-            return OpponentKingSlot;
+            return opponentKingSlot;
         }
         return undefined;
     }

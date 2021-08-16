@@ -14,7 +14,7 @@ export class Tower extends Piece {
         return [...slotsPosibles, ...Tower.getPosibleMoves(slotOrigen, this)]
     }
     public static getPosibleMoves(slotOrigen: BoardSlot, piece:Piece): BoardSlot[] {
-        let slots: BoardSlot[] = Game.instance.board.slots;
+        let slots: BoardSlot[] = Game.instance.board.slotsWithoutSelected;
         let index: number = BoardSlot.getIndex(slotOrigen)
         let slotsPosibles: BoardSlot[] = []
 

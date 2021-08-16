@@ -46,5 +46,16 @@ export class Board {
         slots[60].piece = new King(eColor.white);
         return slots;
     }
+    get slotsWithoutSelected() {
+        let slotsWithoutSelected = [...this.slots];
+        for (let index = 0; index < slotsWithoutSelected.length; index++) {
+            const slot = slotsWithoutSelected[index];
+            if (slot.piece && slot.piece.isSelected) {
+                let { y, x, color } = slot;
+                slotsWithoutSelected[index] = new BoardSlot(y, x, color, null);
+            }
+        }
+        return slotsWithoutSelected;
+    }
 }
 //# sourceMappingURL=board.js.map

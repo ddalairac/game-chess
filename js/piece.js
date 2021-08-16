@@ -33,6 +33,8 @@ export class Piece {
                 }
             }
         });
+        let possibleMovesSet = new Set(possibleMoves);
+        possibleMoves = [...possibleMovesSet];
         return possibleMoves;
     }
 }
